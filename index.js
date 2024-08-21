@@ -20,9 +20,9 @@ function processJson() {
 
 function confirmTote(deliveryOrder) {
   const details = [];
-  const prefixTote = "TG";
-  const toteCode = "3327";
-  let runningNumber = 1;
+  const prefixTote = document.getElementById('prefixTote').value;
+  const toteCode = document.getElementById('toteCode').value;
+  let runningNumber = +document.getElementById('startRunningNumber').value;
 
   for (let i = 0; i < deliveryOrder.items.length; i++) {
     const doItem = deliveryOrder.items[i];
@@ -105,11 +105,24 @@ function confirmShipment(deliveryOrder) {
 }
 
 function generateDateTime(date) {
-  return new Date().toISOString().replace('T', ' ').substring(0, 19);
+  const now = date ? new Date(date) : new Date();
+  const year = now.getFullYear();
+  const month = String(now.getMonth() + 1).padStart(2, '0');
+  const day = String(now.getDate()).padStart(2, '0');
+  const hours = String(now.getHours()).padStart(2, '0');
+  const minutes = String(now.getMinutes()).padStart(2, '0');
+  const seconds = String(now.getSeconds()).padStart(2, '0');
+
+  return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
 }
 
 function generateDate(date) {
-  return new Date().toISOString().substring(0, 10);
+  const now = date ? new Date(date) : new Date();
+  const year = now.getFullYear();
+  const month = String(now.getMonth() + 1).padStart(2, '0');
+  const day = String(now.getDate()).padStart(2, '0');
+
+  return `${year}-${month}-${day}`;
 }
 
 function clearData() {
