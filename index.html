@@ -1,69 +1,118 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>JSON Processor</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 20px;
-        }
-        textarea {
-            width: 100%;
-            height: 150px;
-            margin-bottom: 10px;
-        }
-        #output {
-            white-space: pre-wrap;
-            background-color: #f0f0f0;
-            padding: 10px;
-            border: 1px solid #ccc;
-            margin-top: 10px;
-        }
-        button {
-            padding: 10px 20px;
-            font-size: 16px;
-            cursor: pointer;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>JSON Processor</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+    }
+
+    .form-group {
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+    }
+
+    .form-group label {
+      width: 150px;
+      margin-right: 10px;
+    }
+
+    .form-group input {
+      width: 200px;
+      padding: 5px;
+    }
+
+    textarea {
+      width: 100%;
+      height: 150px;
+      margin-bottom: 10px;
+    }
+
+    #confirmToteOutput,
+    #confirmShipmentOutput {
+      white-space: pre-wrap;
+      background-color: #f0f0f0;
+      padding: 10px;
+      border: 1px solid #ccc;
+      margin-top: 10px;
+    }
+
+    button {
+      padding: 10px 20px;
+      font-size: 16px;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+
+    .submit-button {
+      padding: 10px 20px;
+      font-size: 18px;
+      cursor: pointer;
+      display: inline-block;
+      background-color: #337ab7;
+      color: white;
+      border: none;
+      border-radius: 4px;
+    }
+
+    .submit-button:hover {
+      background-color: #5cb85c;
+    }
+
+    .copy-button {
+      margin-left: 10px;
+      padding: 2px 8px;
+      font-size: 18px;
+      cursor: pointer;
+      display: inline-block;
+      background-color: #c6c6c6;
+      color: white;
+      border: none;
+      border-radius: 4px;
+    }
+
+    .copy-button:hover {
+      background-color: #9ca29c;
+    }
+  </style>
 </head>
+
 <body>
-    <h1>JSON Processor</h1>
-    <p>Paste your JSON below:</p>
-    <textarea id="inputJson"></textarea>
-    <button onclick="processJson()">Process JSON</button>
+  <h1>Generate Payload Dispatch Order</h1>
+  <p>Paste your DO below:</p>
+  <textarea id="inputDo"></textarea>
 
-    <h2>Processed JSON Output:</h2>
-    <div id="output"></div>
+  <div class="form-group">
+    <label for="platNo">Plat No:</label>
+    <input type="text" id="platNo" placeholder="Enter PlatNo" value="กข1234">
+  </div>
 
-    <script>
-        function processJson() {
-            try {
-                // รับค่า JSON จาก textarea
-                const inputJson = document.getElementById('inputJson').value;
-                
-                // แปลง JSON จาก String เป็น Object
-                let jsonObject = JSON.parse(inputJson);
+  <div class="form-group">
+    <label for="driverName">Driver Name:</label>
+    <input type="text" id="driverName" placeholder="Enter DriverName" value="นายอำนวย ชัย">
+  </div>
 
-                // เรียกใช้ฟังก์ชันเพื่อ process JSON (ตัวอย่าง: เพิ่มฟิลด์ใหม่เข้าไป)
-                jsonObject = process(jsonObject);
+  <div>
+    <button class="submit-button" onclick="processJson()" style="margin-right: 10px;">Generate Payload</button>
+    <button class="submit-button" onclick="clearData()">Clear</button>
+  </div>
 
-                // แปลง Object ที่ process แล้วกลับเป็น JSON String
-                const outputJson = JSON.stringify(jsonObject, null, 2);
+  <h2>Payload Confirm Tote Output:
+    <button class="copy-button" onclick="copyToClipboard('confirmToteOutput')">Copy</button>
+  </h2>
+  <div id="confirmToteOutput"></div>
 
-                // แสดง JSON ที่ process แล้วใน div
-                document.getElementById('output').textContent = outputJson;
-            } catch (error) {
-                document.getElementById('output').textContent = 'Invalid JSON';
-            }
-        }
+  <h2>Payload Confirm Shipment Output:
+    <button class="copy-button" onclick="copyToClipboard('confirmShipmentOutput')">Copy</button>
+  </h2>
+  <div id="confirmShipmentOutput"></div>
 
-        function process(jsonObject) {
-            // ตัวอย่างการประมวลผล: เพิ่มฟิลด์ใหม่ชื่อ "processed" ในทุก object
-            jsonObject.processed = true;
-            return jsonObject;
-        }
-    </script>
+  <script src="index.js"></script>
 </body>
+
 </html>
