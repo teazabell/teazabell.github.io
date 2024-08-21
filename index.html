@@ -111,7 +111,6 @@
     <small class="form-text text-muted" style="margin-left: 10px;">เช่น 1 จะได้ 0001 , 0002 ... n จะ generate tote Id ตั้งแต่ 1 - n (ตามจำนวน items ใน do)</small>
   </div>
 
-  <hr>
   <h3>Fill in Shipment information</h3>
   <div class="form-group">
     <label for="platNo">Plat No:</label>
@@ -127,6 +126,8 @@
     <button class="submit-button" onclick="processJson()" style="margin-right: 10px;">Generate Payload</button>
     <button class="submit-button" onclick="clearData()">Clear</button>
   </div>
+
+  <hr style="margin-top: 30px;">
 
   <h2>Payload Confirm Tote Output:
     <button class="copy-button" onclick="copyToClipboard('confirmToteOutput')">Copy</button>
