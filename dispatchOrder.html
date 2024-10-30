@@ -1,0 +1,53 @@
+<div>
+<h1>Generate Payload Dispatch Order</h1>
+  <p><b>Step1:</b> Go to mongodb collection <b>order.delivery_orders</b> then right click at your document and select copy > <b>Copy Value as Plain Text</b></p>
+  <p><b>Step2:</b> Paste your Delivery Order here</p>
+  <textarea id="inputDoDispatchOrder"></textarea>
+
+  <h3>Fill in Tote information</h3>
+  <div class="form-group">
+    <label for="prefixTote">Prefix Tote:</label>
+    <input type="text" id="prefixTote" placeholder="Enter Prefix Tote">
+    <small class="form-text text-muted" style="margin-left: 10px;">เช่น PL, TG, TB, TS, TX, etc.</small>
+  </div>
+
+  <div class="form-group">
+    <label for="prefixTote">Subfix Tote Code:</label>
+    <input type="text" id="toteCode" placeholder="Enter Tote Code">
+    <small class="form-text text-muted" style="margin-left: 10px;">เลขก่อน running number จะใส่หรือไม่ใส่ก็ได้ เช่น 9999 -> TB9999xxxx (xxxx คือ running number)</small>
+  </div>
+
+  <div class="form-group">
+    <label for="driverName">Start Running Number:</label>
+    <input type="text" id="startRunningNumber" placeholder="Enter Start Running Number">
+    <small class="form-text text-muted" style="margin-left: 10px;">เช่น 1 จะได้ 0001 , 0002 ... n จะ generate tote Id ตั้งแต่ 1 - n (ตามจำนวน items ใน do)</small>
+  </div>
+
+  <h3>Fill in Shipment information</h3>
+  <div class="form-group">
+    <label for="platNo">Plat No:</label>
+    <input type="text" id="platNo" placeholder="Enter PlatNo" value="กข1234">
+  </div>
+
+  <div class="form-group">
+    <label for="driverName">Driver Name:</label>
+    <input type="text" id="driverName" placeholder="Enter DriverName" value="โดมินิค โทเรตโต้">
+  </div>
+
+  <div>
+    <button class="submit-button" onclick="processPrepareDispatchOrder()" style="margin-right: 10px;">Generate Payload</button>
+    <button class="submit-button" onclick="clearDataDispatchOrder()">Clear</button>
+  </div>
+
+  <hr style="margin-top: 30px;">
+
+  <h2>Payload Confirm Tote Output:
+    <button class="copy-button" onclick="copyToClipboard('confirmToteOutput')">Copy</button>
+  </h2>
+  <div id="confirmToteOutput" class="payload-content"></div>
+
+  <h2>Payload Confirm Shipment Output:
+    <button class="copy-button" onclick="copyToClipboard('confirmShipmentOutput')">Copy</button>
+  </h2>
+  <div id="confirmShipmentOutput" class="payload-content"></div>
+</div>

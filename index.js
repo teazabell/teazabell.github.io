@@ -1,6 +1,6 @@
-function processJson() {
+function processPrepareDispatchOrder() {
   try {
-    const deliveryOrder = document.getElementById('inputDo').value;
+    const deliveryOrder = document.getElementById('inputDoDispatchOrder').value;
 
     let jsonObject = JSON.parse(deliveryOrder);
 
@@ -125,8 +125,8 @@ function generateDate(date) {
   return `${year}-${month}-${day}`;
 }
 
-function clearData() {
-  document.getElementById('inputDo').value = '';
+function clearDataDispatchOrder() {
+  document.getElementById('inputDoDispatchOrder').value = '';
   document.getElementById('platNo').value = '';
   document.getElementById('driverName').value = '';
   document.getElementById('confirmToteOutput').textContent = '';
@@ -142,4 +142,91 @@ function copyToClipboard(elementId) {
   document.execCommand('copy');
   window.getSelection().removeAllRanges();
   alert('Copied to clipboard!');
+}
+
+function processPrepareSubmitGr() {
+  try {
+    const deliveryOrderRawData = document.getElementById('inputDoSubmitGr').value;
+    let driverSignImage = document.getElementById('driverSignImage').value;
+
+    let deliveryOrder = JSON.parse(deliveryOrderRawData);
+    console.log(deliveryOrder)
+
+    let i = 1
+    let totalAmount = 0
+    const allTotes = new Set();
+    const items = [];
+    for (let i = 0; i < deliveryOrder.items.length; i++)  {
+      const doItem = deliveryOrder.items[i];
+      const receiveQty = +doItem.qty * +doItem.unitFactor;
+
+      const totes = []
+
+      if (doItem.totes && doItem.totes.length > 0) {
+        for (let j = 0; j < doItem.totes.length; j++) {
+          const tote = doItem.totes[j];
+          totes.push({
+            "toteId": tote.toteId,
+            "qty": receiveQty
+          })
+          allTotes.add(tote.toteId);
+        }
+      }
+
+      items.push({
+        "itemNo": i++,
+        "barcode": doItem.barcode,
+        "claimAmount": {
+          "amount": 0.0,
+          "currency": "THB"
+        },
+        "claimQty": 0,
+        "receiveAmount": doItem.amount,
+        "receiveQty": receiveQty,
+        "receiveQtyOnDO": receiveQty,
+        "totes": totes
+      })
+      totalAmount += doItem.amount["amount"]
+    }
+
+    let prepareSumbit = {
+      "allTotes": Array.from(allTotes),
+      "amount": {
+        "amount": totalAmount.toFixed(2),
+        "currency": "THB"
+      },
+      "claimAmount": {
+        "amount": 0.0,
+        "currency": "THB"
+      },
+      "doNo": deliveryOrder.doNo,
+      "driverSignImage": driverSignImage,
+      "excessItems": [],
+      "items": items,
+      "merchantNo": deliveryOrder.po.merchantNo,
+      "notReceiveTotes": [],
+      "orderType": "SPECIAL_REQUEST",
+      "poNumber": deliveryOrder.po.poNo,
+      "receiveTotes": Array.from(allTotes),
+      "returnItems": [],
+      "returnedTotes": Array.from(allTotes),
+      "shipmentNo": deliveryOrder.shipmentNo,
+      "signImage": driverSignImage,
+      "storeNo": deliveryOrder.po.storeNo,
+      "toBeReturnedTote": 0,
+      "unownedTotes": []
+    }
+
+    const submitGrJson = JSON.stringify(prepareSumbit, null, 2);
+
+    document.getElementById('submitGrOutput').textContent = submitGrJson;
+  } catch (error) {
+    document.getElementById('submitGrOutput').textContent = 'Invalid JSON';
+  }
+}
+
+function clearDataSubmitGr() {
+  document.getElementById('inputDoSubmitGr').value = '';
+  document.getElementById('driverSignImage').value = '';
+  document.getElementById('submitGrOutput').textContent = '';
 }

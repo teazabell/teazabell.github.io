@@ -1,0 +1,25 @@
+<div>
+<h1>Generate Payload Submit GR</h1>
+  <p><b>Step1:</b> Go to mongodb collection <b>order.delivery_orders</b> (do after dispatch order) then right click at your document and select copy > <b>Copy Value as Plain Text</b></p>
+  <p><b>Step2:</b> Paste your Delivery Order here</p>
+  <textarea id="inputDoSubmitGr"></textarea>
+
+  <h3>Fill in the information</h3>
+  <div class="form-group">
+    <label for="driverSignImage">Driver Sign Image Path:</label>
+    <input type="text" id="driverSignImage" placeholder="Enter Driver sign image" value="/good_receives/driver_signature_2024-09-09T07:42:23.794640662.png" style="width: 500px !important;">
+    <small class="form-text text-muted" style="margin-left: 10px;">ถ้าไม่ใส่ จะใช้ค่า default</small>
+  </div>
+
+  <div>
+    <button class="submit-button" onclick="processPrepareSubmitGr()" style="margin-right: 10px;">Generate Payload</button>
+    <button class="submit-button" onclick="clearDataSubmitGr()">Clear</button>
+  </div>
+
+  <hr style="margin-top: 30px;">
+
+  <h2>Payload Submit GR Output:
+    <button class="copy-button" onclick="copyToClipboard('submitGrOutput')">Copy</button>
+  </h2>
+  <div id="submitGrOutput" class="payload-content"></div>
+</div>

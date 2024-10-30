@@ -4,141 +4,59 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Generate Payload Dispatch Order</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      margin: 20px;
-    }
-
-    .form-group {
-      margin-bottom: 10px;
-      display: flex;
-      align-items: center;
-    }
-
-    .form-group label {
-      width: 150px;
-      margin-right: 10px;
-    }
-
-    .form-group input {
-      width: 200px;
-      padding: 5px;
-    }
-
-    .form-text {
-      font-size: 0.875em;
-      color: #6c757d;
-    }
-
-    textarea {
-      width: 100%;
-      height: 150px;
-      margin-bottom: 10px;
-    }
-
-    #confirmToteOutput,
-    #confirmShipmentOutput {
-      white-space: pre-wrap;
-      background-color: #f0f0f0;
-      padding: 10px;
-      border: 1px solid #ccc;
-      margin-top: 10px;
-    }
-
-    button {
-      padding: 10px 20px;
-      font-size: 16px;
-      cursor: pointer;
-      margin-top: 10px;
-    }
-
-    .submit-button {
-      padding: 10px 20px;
-      font-size: 18px;
-      cursor: pointer;
-      display: inline-block;
-      background-color: #337ab7;
-      color: white;
-      border: none;
-      border-radius: 4px;
-    }
-
-    .submit-button:hover {
-      background-color: #5cb85c;
-    }
-
-    .copy-button {
-      margin-left: 10px;
-      padding: 2px 8px;
-      font-size: 18px;
-      cursor: pointer;
-      display: inline-block;
-      background-color: #c6c6c6;
-      color: white;
-      border: none;
-      border-radius: 4px;
-    }
-
-    .copy-button:hover {
-      background-color: #9ca29c;
-    }
-  </style>
+  <title>Generate Script TDShop</title>
+  <link rel="stylesheet" href="styles.css">
 </head>
 
 <body>
-  <h1>Generate Payload Dispatch Order</h1>
-  <p>Paste your Delivery Order below:</p>
-  <textarea id="inputDo"></textarea>
 
-  <h3>Fill in Tote information</h3>
-  <div class="form-group">
-    <label for="prefixTote">Prefix Tote:</label>
-    <input type="text" id="prefixTote" placeholder="Enter Prefix Tote">
-    <small class="form-text text-muted" style="margin-left: 10px;">เช่น PL, TG, TB, TS, TX</small>
+  <div class="tabs">
+    <div class="tab" onclick="openTab(event, 'dispatchOrder')">Dispatch Order</div>
+    <div class="tab" onclick="openTab(event, 'submitGr')">Submit GR</div>
   </div>
 
-  <div class="form-group">
-    <label for="prefixTote">Tote Code:</label>
-    <input type="text" id="toteCode" placeholder="Enter Tote Code">
-    <small class="form-text text-muted" style="margin-left: 10px;">จะใส่หรือไม่ใส่ก็ได้ เช่น 9999 เลขก่อน running number ตัวอย่าง TB9999xxxx (xxxx คือ running number)</small>
+  <div class="tab-content active">
+    <div id="content-area"></div>
   </div>
 
-  <div class="form-group">
-    <label for="driverName">Start Running Number:</label>
-    <input type="text" id="startRunningNumber" placeholder="Enter Start Running Number">
-    <small class="form-text text-muted" style="margin-left: 10px;">เช่น 1 จะได้ 0001 , 0002 ... n จะ generate tote Id ตั้งแต่ 1 - n (ตามจำนวน items ใน do)</small>
-  </div>
+  <script>
+    function openTab(evt, pageName) {
+      const tabs = document.getElementsByClassName("tab");
+      const contentArea = document.getElementById('content-area');
 
-  <h3>Fill in Shipment information</h3>
-  <div class="form-group">
-    <label for="platNo">Plat No:</label>
-    <input type="text" id="platNo" placeholder="Enter PlatNo" value="กข1234">
-  </div>
+      // แสดงข้อความระหว่างโหลด
+      contentArea.innerHTML = 'กำลังโหลด...';
 
-  <div class="form-group">
-    <label for="driverName">Driver Name:</label>
-    <input type="text" id="driverName" placeholder="Enter DriverName" value="นายอำนวย ชัย">
-  </div>
+      // ลบคลาส active จากแท็บทั้งหมด
+      for (let i = 0; i < tabs.length; i++) {
+        tabs[i].classList.remove("active");
+      }
 
-  <div>
-    <button class="submit-button" onclick="processJson()" style="margin-right: 10px;">Generate Payload</button>
-    <button class="submit-button" onclick="clearData()">Clear</button>
-  </div>
+      // แสดงแท็บที่ถูกเลือก
+      evt.currentTarget.classList.add("active");
 
-  <hr style="margin-top: 30px;">
+      // โหลดเนื้อหาจากไฟล์ HTML ที่กำหนด
+      fetch(`${pageName}.html`)
+        .then(response => {
+          if (!response.ok) {
+            throw new Error('Network response was not ok');
+          }
+          return response.text();
+        })
+        .then(data => {
+          contentArea.innerHTML = data;
+        })
+        .catch(error => {
+          console.error(`Error loading ${pageName}.html:`, error);
+          contentArea.innerHTML = '<p>ไม่สามารถโหลดเนื้อหาได้</p>';
+        });
+    }
 
-  <h2>Payload Confirm Tote Output:
-    <button class="copy-button" onclick="copyToClipboard('confirmToteOutput')">Copy</button>
-  </h2>
-  <div id="confirmToteOutput"></div>
-
-  <h2>Payload Confirm Shipment Output:
-    <button class="copy-button" onclick="copyToClipboard('confirmShipmentOutput')">Copy</button>
-  </h2>
-  <div id="confirmShipmentOutput"></div>
-
+    document.addEventListener("DOMContentLoaded", function () {
+      const firstTab = document.querySelector('.tab');
+      openTab({ currentTarget: firstTab }, 'dispatchOrder');
+    });
+  </script>
   <script src="index.js"></script>
 </body>
 
