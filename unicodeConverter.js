@@ -43,6 +43,6 @@ function processUnicodeConverter() {
     i++;
   }
 
-  const json = JSON.stringify(properties, null, 2);
-  document.getElementById('unicodeOutput').textContent = json;
+  const plainTextOutput = Object.entries(properties).map(([key, value]) => `${key}: ${value}`).join('\n');
+  document.getElementById('unicodeOutput').textContent = plainTextOutput;
 }
