@@ -18,7 +18,7 @@ h1 , h2, h3, b{
   font-size: 15px;
 }
 
-input, textarea {
+input, textarea, select {
   font-family: 'Kanit', sans-serif;
   font-size: 15px;
   padding: 10px;
@@ -141,4 +141,27 @@ button {
 
 .tab-content.active {
   display: block;
+}
+
+.textarea-content {
+  margin-right: 20px;
+}
+
+select {
+  width: 200px;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  background-color: #f9f9f9;
+  color: #333;
+}
+
+select:hover {
+  border-color: #888;
+}
+
+select:focus {
+  border-color: #007bff;
+  outline: none;
+  box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
 }

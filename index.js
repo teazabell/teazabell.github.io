@@ -156,7 +156,7 @@ function processPrepareSubmitGr() {
     let totalAmount = 0
     const allTotes = new Set();
     const items = [];
-    for (let i = 0; i < deliveryOrder.items.length; i++)  {
+    for (let i = 0; i < deliveryOrder.items.length; i++) {
       const doItem = deliveryOrder.items[i];
       const receiveQty = +doItem.qty * +doItem.unitFactor;
 
@@ -230,3 +230,79 @@ function clearDataSubmitGr() {
   document.getElementById('driverSignImage').value = '';
   document.getElementById('submitGrOutput').textContent = '';
 }
+
+function processPrepareCreateStockCountRequest() {
+  try {
+    const subject = document.getElementById('subject').value;
+    const itemType = document.getElementById('itemType').value;
+
+    const inputCodes = document.getElementById('inputCodes').value;
+    const items = inputCodes.split(",").map((item) => item.trim());
+
+    const selectStore = document.getElementById('selectStore').value;
+    let stores = []
+    if (selectStore === "DEAR") {
+      stores = ["PANDA01", "PANDA02"]
+    }
+    else if (selectStore === "TUNG") {
+      stores = ["CJX12491", "CJX12492", "CJX7777", "PANDA01", "PANDA02"]
+    }
+    else if (selectStore === "ANDROID") {
+      stores = ["GX000001", "GX999999"]
+    } else {
+      const inputStores = document.getElementById('inputStores').value;
+      stores = inputStores.split(",").map((item) => item.trim());
+    }
+
+    const startDate = new Date();
+    startDate.setMinutes(0, 0, 0);
+    startDate.setHours(startDate.getHours() + 1);
+    const countStartDatetime = startDate.toISOString();
+
+    const endDate = new Date();
+    endDate.setDate(endDate.getDate() + 7);
+    endDate.setHours(23, 59, 59, 999);
+    const countEndDatetime = endDate.toISOString()
+
+    const payload = {
+      subject: subject,
+      countStartDatetime: countStartDatetime,
+      countEndDatetime: countEndDatetime,
+      itemType: itemType,
+      items: items,
+      selectStore: "SELECT_BY_STORE",
+      storeCodes: stores,
+    }
+
+    const payloadJson = JSON.stringify(payload, null, 2);
+
+    document.getElementById('stockCountRequestOutput').textContent = payloadJson;
+  } catch (error) {
+    document.getElementById('stockCountRequestOutput').textContent = 'Invalid JSON';
+  }
+}
+
+function clearDataCreateStockCountRequest() {
+  document.getElementById('subject').value = '';
+  document.getElementById('itemType').value = '';
+  document.getElementById('inputCodes').value = '';
+  document.getElementById('inputStores').value = '';
+  document.getElementById('selectStore').value = '';
+  document.getElementById('stockCountRequestOutput').textContent = '';
+}
+
+function toggleInputBox() {
+  var selectBox = document.getElementById('selectStore');
+  var divInputStores = document.getElementById('divInputStores');
+  
+  var selectedValue = selectBox.value;
+  
+  if (selectedValue === 'OTHER') {
+    divInputStores.style.display = 'block';
+  } else {
+    divInputStores.style.display = 'none';
+  }
+}
+window.onload = function() {
+  toggleInputBox();
+};

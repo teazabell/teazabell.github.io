@@ -1,0 +1,53 @@
+<div>
+  <h1>Stock Count Request</h1>
+
+  <div class="form-group">
+    <label for="subject">Subject:</label>
+    <input type="text" id="subject" placeholder="Enter subject" style="width: 500px !important;">
+  </div>
+
+  <div class="form-group">
+    <label for="itemType">Select by:</label>
+    <select id="itemType" name="itemType">
+      <option value="">Select by</option>
+      <option value="ARTICLE">Select item by Item</option>
+      <option value="CLASS">Select item by Class</option>
+    </select>
+  </div>
+
+  <div class="textarea-content">
+    <label>Class Code / ArticleNo : </label>
+    <small class="form-text text-muted" style="margin-left: 10px;">รูปแบบข้อมูลคั่นด้วย comma (,) ตัวอย่าง 10100,10200,10300,10500</small>
+    <textarea id="inputCodes" style="height: 60px !important; margin-top: 10px;"></textarea>
+  </div>
+
+  <div class="form-group">
+    <label for="selectStore">Select Store:</label>
+    <select id="selectStore" name="selectStore" onchange="toggleInputBox()">
+      <option value="">Select a store</option>
+      <option value="DEAR">Dear's Store</option>
+      <option value="TUNG">P'Tung's Store</option>
+      <option value="ANDROID">Android's Store</option>
+      <option value="OTHER">Other</option>
+    </select>
+  </div>
+
+  <div class="textarea-content" id="divInputStores" style="display: none;">
+    <label>Stores : </label>
+    <small class="form-text text-muted" style="margin-left: 10px;">รูปแบบข้อมูลคั่นด้วย comma (,) ตัวอย่าง CJX0001,CJX0002</small>
+    <textarea id="inputStores" style="height: 60px !important; margin-top: 10px;"></textarea>
+  </div>
+
+  <div>
+    <button class="submit-button" onclick="processPrepareCreateStockCountRequest()" style="margin-right: 10px;">Generate
+      Payload</button>
+    <button class="submit-button" onclick="clearDataCreateStockCountRequest()">Clear</button>
+  </div>
+
+  <hr style="margin-top: 30px;">
+
+  <h2>Payload Output:
+    <button class="copy-button" onclick="copyToClipboard('stockCountRequestOutput')">Copy</button>
+  </h2>
+  <div id="stockCountRequestOutput" class="payload-content"></div>
+</div>
