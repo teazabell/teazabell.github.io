@@ -233,11 +233,14 @@ function clearDataSubmitGr() {
 
 function processPrepareCreateStockCountRequest() {
   try {
+    const selectedInputSeparator = document.querySelector('input[name="inputSeparatorStockCount"]:checked');
+    const inputSeparator = selectedInputSeparator ? selectedInputSeparator.value : null;
+
     const subject = document.getElementById('subject').value;
     const itemType = document.getElementById('itemType').value;
 
     const inputCodes = document.getElementById('inputCodes').value;
-    const items = inputCodes.split(",").map((item) => item.trim());
+    const items = (inputSeparator === 'NEW_LINE' ? inputCodes.split('\n') : inputCodes.split(',')).map((item) => item.trim());
 
     const selectStore = document.getElementById('selectStore').value;
     let stores = []
@@ -289,6 +292,7 @@ function clearDataCreateStockCountRequest() {
   document.getElementById('inputStores').value = '';
   document.getElementById('selectStore').value = '';
   document.getElementById('stockCountRequestOutput').textContent = '';
+  document.querySelector('input[name="inputSeparatorStockCount"][value="NEW_LINE"]').checked = true;
 }
 
 function toggleInputBox() {
