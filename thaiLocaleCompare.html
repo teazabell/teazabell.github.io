@@ -1,0 +1,38 @@
+<div>
+  <h1>Thai Locale Compare</h1>
+
+  <div class="radio-group">
+    <label for="inputSeparator">Input Separator:</label>
+    <label>
+      <input type="radio" name="inputSeparator" value="NEW_LINE" checked />New Line
+    </label>
+    <label>
+      <input type="radio" name="inputSeparator" value="COMMA" />Comma
+    </label>
+  </div>
+
+  <div class="radio-group">
+    <label for="outputSeparator">Output Separator:</label>
+    <label><input type="radio" name="outputSeparator" value="NEW_LINE" checked />New Line</label>
+    <label><input type="radio" name="outputSeparator" value="COMMA" />Comma</label>
+  </div>
+
+  <div class="textarea-content" style="margin-top: 20px;">
+    <label>Enter Text: </label>
+    <textarea id="inputText" style="margin-top: 10px;"></textarea>
+  </div>
+
+  <div>
+    <button id="sortButton" class="primary-button" onclick="toggleSortOrder()" style="margin-right: 10px;">
+      <i class="fas fa-sort-amount-up-alt"></i> Sort A to Z
+    </button>
+    <button class="secondary-button" onclick="clearDataSorting()">Clear</button>
+  </div>
+
+  <hr style="margin-top: 30px;">
+
+  <h2>Result of Sort:
+    <button class="copy-button" onclick="copyToClipboard('sortingOutput')">Copy</button>
+  </h2>
+  <div id="sortingOutput" class="payload-content"></div>
+</div>

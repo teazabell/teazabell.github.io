@@ -294,15 +294,97 @@ function clearDataCreateStockCountRequest() {
 function toggleInputBox() {
   var selectBox = document.getElementById('selectStore');
   var divInputStores = document.getElementById('divInputStores');
-  
+  if (selectBox === null || divInputStores === null) return
+
   var selectedValue = selectBox.value;
-  
   if (selectedValue === 'OTHER') {
     divInputStores.style.display = 'block';
   } else {
     divInputStores.style.display = 'none';
   }
 }
-window.onload = function() {
+window.onload = function () {
   toggleInputBox();
 };
+
+function thaiLocaleCompare(s1, s2, ascending = true) {
+  const collator = new Intl.Collator('th-TH');
+  // Check if one string starts with English and the other with Thai
+  const isS1English = /^[A-Za-z]/.test(s1);
+  const isS2English = /^[A-Za-z]/.test(s2);
+
+  // Ensure English words come first, Thai words after
+  if (isS1English && !isS2English) return ascending ? -1 : 1;
+  if (!isS1English && isS2English) return ascending ? 1 : -1;
+
+  // If both are the same (both English or both Thai), sort by Thai locale
+  const comparison = collator.compare(getThaiComparisonString(s1), getThaiComparisonString(s2));
+  return ascending ? comparison : -comparison;
+}
+
+function getThaiComparisonString(s) {
+  return Array.from(s).map(char => {
+    return char === ' ' ? '0' : char;
+  }).join('');
+}
+
+function processingThaiLocalSorting(ascending = true) {
+  try {
+    // Retrieve input separator selection
+    const selectedInputSeparator = document.querySelector('input[name="inputSeparator"]:checked');
+    const inputSeparator = selectedInputSeparator ? selectedInputSeparator.value : null;
+
+    // Retrieve output separator selection
+    const selectedOutputSeparator = document.querySelector('input[name="outputSeparator"]:checked');
+    const outputSeparator = selectedOutputSeparator ? selectedOutputSeparator.value : null;
+
+    // Get input text and split into an array based on the input separator
+    const inputText = document.getElementById('inputText').value;
+    const thaiStrings = inputSeparator === 'NEW_LINE' ? inputText.split('\n') : inputText.split(',');
+
+    // Sort the array with the specified order
+    const sortedThaiStrings = thaiStrings.sort((a, b) => thaiLocaleCompare(a, b, ascending));
+
+    // Join sorted strings based on output separator and display result
+    document.getElementById('sortingOutput').textContent = outputSeparator === 'NEW_LINE'
+      ? sortedThaiStrings.join('\n')
+      : sortedThaiStrings.join(',');
+  } catch (error) {
+    document.getElementById('sortingOutput').textContent = 'Invalid Text';
+  }
+}
+
+function clearDataSorting() {
+  document.querySelector('input[name="inputSeparator"][value="NEW_LINE"]').checked = true;
+  document.querySelector('input[name="outputSeparator"][value="NEW_LINE"]').checked = true;
+  document.getElementById('inputText').value = '';
+  document.getElementById('sortingOutput').textContent = '';
+
+  isAscending = true
+  const sortButton = document.getElementById('sortButton');
+  const icon = sortButton.querySelector('i');
+  icon.className = 'fas fa-sort-amount-up-alt';
+  sortButton.textContent = ' Sort A to Z';
+  sortButton.prepend(icon);
+}
+
+let isAscending = true;
+
+function toggleSortOrder() {
+  const sortButton = document.getElementById('sortButton');
+  const icon = sortButton.querySelector('i');
+
+  if (isAscending) {
+    processingThaiLocalSorting(true);
+    icon.className = 'fas fa-sort-amount-down-alt';
+    sortButton.textContent = ' Sort Z to A';
+    sortButton.prepend(icon);
+  } else {
+    processingThaiLocalSorting(false);
+    icon.className = 'fas fa-sort-amount-up-alt';
+    sortButton.textContent = ' Sort A to Z';
+    sortButton.prepend(icon);
+  }
+
+  isAscending = !isAscending;
+}
