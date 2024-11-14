@@ -15,6 +15,7 @@
     <div class="tab" onclick="openTab(event, 'dispatchOrder')">Dispatch Order</div>
     <div class="tab" onclick="openTab(event, 'submitGr')">Submit GR</div>
     <div class="tab" onclick="openTab(event, 'createStockCountRequest')">Stock Count Request</div>
+    <div class="tab" onclick="openTab(event, 'createStockCountGroup')">Stock Count Group</div>
     <div class="tab" onclick="openTab(event, 'thaiLocaleCompare')">Thai Locale Compare</div>
     <div class="tab" onclick="openTab(event, 'unicodeConverter')">Unicode Converter</div>
   </div>
@@ -58,7 +59,7 @@
 
     document.addEventListener("DOMContentLoaded", function () {
       const firstTab = document.querySelector('.tab');
-      openTab({ currentTarget: firstTab }, 'dispatchOrder');
+      openTab({ currentTarget: firstTab }, 'createStockCountGroup');
     });
   </script>
   <script src="index.js"></script>

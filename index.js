@@ -392,3 +392,40 @@ function toggleSortOrder() {
 
   isAscending = !isAscending;
 }
+
+function processPrepareCreateStockCountGroup() {
+  try {
+    const selectedInputSeparator = document.querySelector('input[name="inputSeparatorGroup"]:checked');
+    const inputSeparator = selectedInputSeparator ? selectedInputSeparator.value : null;
+
+    const docNo = document.getElementById('docNo').value;
+    const deviceId = document.getElementById('deviceId').value;
+
+    const inputCodes = document.getElementById('inputCodesGroup').value;
+    const list = (inputSeparator === 'NEW_LINE' ? inputCodes.split('\n') : inputCodes.split(','))
+    let items = list.map(item => ({
+      classCode: item.trim(),
+      product: []
+    }));
+
+
+    const payload = {
+      docNo: docNo,
+      stockCountGroupType: "STORE",
+      stockCountItemType: "CLASS",
+      items: items,
+      deviceId: deviceId,
+      modeSetting: "GR_INCLUDED"
+    }
+
+    const payloadJson = JSON.stringify(payload, null, 2);
+
+    document.getElementById('stockCountGroupOutput').textContent = payloadJson;
+  } catch (error) {
+    document.getElementById('stockCountGroupOutput').textContent = 'Invalid JSON';
+  }
+}
+
+function clearDataCreateStockCountGroup() {
+
+}
