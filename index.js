@@ -30,7 +30,7 @@ function confirmTote(deliveryOrder) {
       "referenceNo": deliveryOrder.doNo,
       "sku": doItem.articleNo,
       "toteId": `${prefixTote}${toteCode}${String(runningNumber++).padStart(4, '0')}`,
-      "qtyOrdered": doItem.qty
+      "qtyOrdered": doItem.qty * doItem.unitFactor
     });
   }
 
@@ -68,7 +68,7 @@ function confirmShipment(deliveryOrder) {
       "referenceNo": deliveryOrder.doNo,
       "lineNo": i + 1,
       "sku": doItem.articleNo,
-      "qtyShipped": doItem.qty,
+      "qtyShipped": doItem.qty * doItem.unitFactor,
       "lotAtt01": "",
       "lotAtt02": "",
       "lotAtt03": generateDate(now),
