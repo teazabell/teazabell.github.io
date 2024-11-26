@@ -1,3 +1,24 @@
+window.onload = function () {
+  toggleInputBox();
+  togglePackingOption();
+};
+
+function togglePackingOption(){
+  var packingOption = document.getElementById('packingOption');
+  var divOneTote = document.getElementById('one-tote-info');
+  var divSparateTote = document.getElementById('separate-tote-info');
+  if (packingOption === null || divOneTote === null || divSparateTote === null) return
+
+  var selectedValue = packingOption.value;
+  if (selectedValue === 'ONE_TOTE') {
+    divOneTote.style.display = 'block';
+    divSparateTote.style.display = 'none';
+  } else {
+    divSparateTote.style.display = 'block';
+    divOneTote.style.display = 'none';
+  }
+}
+
 function processPrepareDispatchOrder() {
   try {
     const deliveryOrder = document.getElementById('inputDoDispatchOrder').value;
@@ -23,13 +44,15 @@ function confirmTote(deliveryOrder) {
   const prefixTote = document.getElementById('prefixTote').value;
   const toteCode = document.getElementById('toteCode').value;
   let runningNumber = +document.getElementById('startRunningNumber').value;
+  const packingOption = document.getElementById('packingOption').value;
+  const toteId = document.getElementById('toteId').value;
 
   for (let i = 0; i < deliveryOrder.items.length; i++) {
     const doItem = deliveryOrder.items[i];
     details.push({
       "referenceNo": deliveryOrder.doNo,
       "sku": doItem.articleNo,
-      "toteId": `${prefixTote}${toteCode}${String(runningNumber++).padStart(4, '0')}`,
+      "toteId": packingOption === 'ONE_TOTE' ? toteId : `${prefixTote}${toteCode}${String(runningNumber++).padStart(4, '0')}`,
       "qtyOrdered": doItem.qty * doItem.unitFactor
     });
   }
@@ -307,9 +330,6 @@ function toggleInputBox() {
     divInputStores.style.display = 'none';
   }
 }
-window.onload = function () {
-  toggleInputBox();
-};
 
 function thaiLocaleCompare(s1, s2, ascending = true) {
   const collator = new Intl.Collator('th-TH');

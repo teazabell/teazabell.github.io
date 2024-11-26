@@ -7,22 +7,40 @@
   </div>
 
   <h3>Fill in Tote information</h3>
-  <div class="form-group">
-    <label for="prefixTote">Prefix Tote:</label>
-    <input type="text" id="prefixTote" placeholder="Enter Prefix Tote">
-    <small class="form-text text-muted" style="margin-left: 10px;">เช่น PL, TG, TB, TS, TX, etc.</small>
+  <div class="form-group" style="margin-bottom: 10px;">
+    <label for="packingOption" class="text-red" style="font-size: 20px;">Packing Options:</label>
+    <select id="packingOption" name="packingOption" onchange="togglePackingOption()" style="width: 25em;">
+      <option value="ONE_TOTE">Pack everything into one tote</option>
+      <option value="SEPARATE_TOTE" selected>Pack each item separately into individual totes</option>
+    </select>
   </div>
 
-  <div class="form-group">
-    <label for="prefixTote">Subfix Tote Code:</label>
-    <input type="text" id="toteCode" placeholder="Enter Tote Code">
-    <small class="form-text text-muted" style="margin-left: 10px;">เลขก่อน running number จะใส่หรือไม่ใส่ก็ได้ เช่น 9999 -> TB9999xxxx (xxxx คือ running number)</small>
+  <div id="one-tote-info">
+    <div class="form-group">
+      <label for="toteId">ToteId:</label>
+      <input type="text" id="toteId" placeholder="Enter ToteId">
+      <small class="form-text text-muted" style="margin-left: 10px;">เช่น TB990001</small>
+    </div>
   </div>
 
-  <div class="form-group">
-    <label for="driverName">Start Running Number:</label>
-    <input type="text" id="startRunningNumber" placeholder="Enter Start Running Number">
-    <small class="form-text text-muted" style="margin-left: 10px;">เช่น 1 จะได้ 0001 , 0002 ... n จะ generate tote Id ตั้งแต่ 1 - n (ตามจำนวน items ใน do)</small>
+  <div id="separate-tote-info">
+    <div class="form-group">
+      <label for="prefixTote">Prefix Tote:</label>
+      <input type="text" id="prefixTote" placeholder="Enter Prefix Tote">
+      <small class="form-text text-muted" style="margin-left: 10px;">เช่น PL, TG, TB, TS, TX, etc.</small>
+    </div>
+  
+    <div class="form-group">
+      <label for="prefixTote">Subfix Tote Code:</label>
+      <input type="text" id="toteCode" placeholder="Enter Tote Code">
+      <small class="form-text text-muted" style="margin-left: 10px;">เลขก่อน running number จะใส่หรือไม่ใส่ก็ได้ เช่น 9999 -> TB9999xxxx (xxxx คือ running number)</small>
+    </div>
+  
+    <div class="form-group">
+      <label for="driverName">Start Running Number:</label>
+      <input type="text" id="startRunningNumber" placeholder="Enter Start Running Number">
+      <small class="form-text text-muted" style="margin-left: 10px;">เช่น 1 จะได้ 0001 , 0002 ... n จะ generate tote Id ตั้งแต่ 1 - n (ตามจำนวน items ใน do)</small>
+    </div>
   </div>
 
   <h3>Fill in Shipment information</h3>

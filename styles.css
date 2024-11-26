@@ -60,6 +60,14 @@ textarea {
   padding: 10px;
   border: 1px solid #ccc;
   margin-top: 10px;
+  
+  /* เพิ่มการเลื่อน */
+  max-height: 500px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  
+  border-radius: 5px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
 button {
@@ -275,4 +283,8 @@ select:focus {
 .success-button:focus {
   outline: none; /* ลบเส้นรอบปุ่มเมื่อโฟกัส */
   box-shadow: 0 0 0 0.2rem rgba(40, 167, 69, 0.5); /* เพิ่มเงารอบๆ เมื่อปุ่มถูกเลือก */
+}
+
+.text-red{
+  color: red !important;
 }
