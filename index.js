@@ -3,6 +3,13 @@ window.onload = function () {
   togglePackingOption();
 };
 
+document.addEventListener('DOMContentLoaded', function() {
+  const packingOption = document.getElementById('packingOption');
+  if (packingOption) {
+    packingOption.value = 'SEPARATE_TOTE';
+  }
+});
+
 function togglePackingOption(){
   var packingOption = document.getElementById('packingOption');
   var divOneTote = document.getElementById('one-tote-info');
