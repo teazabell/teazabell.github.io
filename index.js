@@ -270,7 +270,7 @@ function processPrepareCreateStockCountRequest() {
     const itemType = document.getElementById('itemType').value;
 
     const inputCodes = document.getElementById('inputCodes').value;
-    const items = (inputSeparator === 'NEW_LINE' ? inputCodes.split('\n') : inputCodes.split(',')).map((item) => item.trim());
+    const items = (inputSeparator === 'NEW_LINE' ? inputCodes.trim().split('\n') : inputCodes.split(',')).map((item) => item.trim());
 
     const selectStore = document.getElementById('selectStore').value;
     let stores = []
