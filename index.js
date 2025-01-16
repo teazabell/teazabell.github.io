@@ -282,6 +282,9 @@ function processPrepareCreateStockCountRequest() {
     }
     else if (selectStore === "ANDROID") {
       stores = ["GX000001", "GX999999"]
+    }
+    else if (selectStore === "DEAR+ANDROID") {
+      stores = ["PANDA01", "PANDA02", "GX000001", "GX999999"]
     } else {
       const inputStores = document.getElementById('inputStores').value;
       stores = inputStores.split(",").map((item) => item.trim());
