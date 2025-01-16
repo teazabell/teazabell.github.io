@@ -1,10 +1,9 @@
 <div>
   <h1>Stock Count Group</h1>
 
-  <h3 style="color: red;">*** Support Select by Class only ***</h3>
   <div class="form-group">
     <label for="docNo">Doc No:</label>
-    <input type="text" id="docNo" placeholder="Enter Doc No" value="SU24-000xxx" style="width: 500px !important;">
+    <input type="text" id="docNo" placeholder="Enter Doc No" value="SU25-000xxx" style="width: 500px !important;">
   </div>
 
   <div class="form-group">
@@ -12,21 +11,38 @@
     <input type="text" id="deviceId" placeholder="Enter DeviceId" value="{{deviceId}}" style="width: 500px !important;">
   </div>
 
-  <div class="radio-group">
-    <label for="inputSeparatorGroup" style="margin-right: 55px;">Input Separator:</label>
-    <label>
-      <input type="radio" name="inputSeparatorGroup" value="NEW_LINE" checked />New Line
-    </label>
-    <label>
-      <input type="radio" name="inputSeparatorGroup" value="COMMA" />Comma
-    </label>
-    <small class="form-text text-muted" style="margin-left: 10px;">รูปแบบข้อมูลคั่นด้วย comma (,) ตัวอย่าง
-      10100,10200,10300,10500,E1000</small>
+  <div>
+    <button type="button" class="collapsible" onclick="openGeneratePayloadCreateStockCount('CLASS')">Type Class</button>
+    <div class="content-collapsible">
+      <div class="radio-group">
+        <label for="inputSeparatorGroup" style="margin-right: 55px;">Input Separator:</label>
+        <label>
+          <input type="radio" name="inputSeparatorGroup" value="NEW_LINE" checked />New Line
+        </label>
+        <label>
+          <input type="radio" name="inputSeparatorGroup" value="COMMA" />Comma
+        </label>
+        <small class="form-text text-muted" style="margin-left: 10px;">รูปแบบข้อมูลคั่นด้วย comma (,) ตัวอย่าง
+          10100,10200,10300,10500,E1000</small>
+      </div>
+
+      <div class="textarea-content" style="margin-top: 10px;">
+        <label>Class Code : </label>
+        <textarea id="inputCodesGroup" style=" margin-top: 10px;"></textarea>
+      </div>
+    </div>
   </div>
 
-  <div class="textarea-content" style="margin-top: 10px;">
-    <label>Class Code : </label>
-    <textarea id="inputCodesGroup" style=" margin-top: 10px;"></textarea>
+  <div>
+    <button type="button" class="collapsible" onclick="openGeneratePayloadCreateStockCount('ARTICLE')">Type
+      Article</button>
+    <div class="content-collapsible">
+      <div class="textarea-content" style="margin-top: 10px;">
+        <p>format [{"classCode" : "" , "articleNo": ""}]</p>
+        <label>Json : </label>
+        <textarea id="inputArticleJson" style=" margin-top: 10px;"></textarea>
+      </div>
+    </div>
   </div>
 
   <div>

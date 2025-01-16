@@ -1,16 +1,18 @@
+const countType = null;
+
 window.onload = function () {
   toggleInputBox();
   togglePackingOption();
 };
 
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
   const packingOption = document.getElementById('packingOption');
   if (packingOption) {
     packingOption.value = 'SEPARATE_TOTE';
   }
 });
 
-function togglePackingOption(){
+function togglePackingOption() {
   var packingOption = document.getElementById('packingOption');
   var divOneTote = document.getElementById('one-tote-info');
   var divSparateTote = document.getElementById('separate-tote-info');
@@ -425,24 +427,15 @@ function toggleSortOrder() {
 
 function processPrepareCreateStockCountGroup() {
   try {
-    const selectedInputSeparator = document.querySelector('input[name="inputSeparatorGroup"]:checked');
-    const inputSeparator = selectedInputSeparator ? selectedInputSeparator.value : null;
-
     const docNo = document.getElementById('docNo').value;
     const deviceId = document.getElementById('deviceId').value;
 
-    const inputCodes = document.getElementById('inputCodesGroup').value;
-    const list = (inputSeparator === 'NEW_LINE' ? inputCodes.split('\n') : inputCodes.split(','))
-    let items = list.map(item => ({
-      classCode: item.trim(),
-      product: []
-    }));
-
+    const items = this.countType == 'CLASS' ? generatePayloadTypeClass() : generatePayloadTypeArticle()
 
     const payload = {
       docNo: docNo,
       stockCountGroupType: "STORE",
-      stockCountItemType: "CLASS",
+      stockCountItemType: this.countType,
       items: items,
       deviceId: deviceId,
       modeSetting: "GR_INCLUDED"
@@ -456,6 +449,77 @@ function processPrepareCreateStockCountGroup() {
   }
 }
 
-function clearDataCreateStockCountGroup() {
+function generatePayloadTypeClass() {
+  const selectedInputSeparator = document.querySelector('input[name="inputSeparatorGroup"]:checked');
+  const inputSeparator = selectedInputSeparator ? selectedInputSeparator.value : null;
+  const inputCodes = document.getElementById('inputCodesGroup').value;
+  const list = (inputSeparator === 'NEW_LINE' ? inputCodes.split('\n') : inputCodes.split(','))
+  return list.map(item => ({
+    classCode: item.trim(),
+    product: []
+  }))
+}
 
+function generatePayloadTypeArticle() {
+  const rawDatas = document.getElementById('inputArticleJson').value;
+  const jsonObject = JSON.parse(rawDatas);
+  const groupedMap = {};
+
+  jsonObject.forEach(item => {
+    const { classCode, articleNo } = item;
+    if (groupedMap[classCode]) {
+      groupedMap[classCode].push(articleNo);
+    } else {
+      groupedMap[classCode] = [articleNo];
+    }
+  });
+
+  return Object.entries(groupedMap).map(([classCode, products]) => ({
+    classCode,
+    products
+  }));
+}
+
+function clearDataCreateStockCountGroup() {
+  document.querySelector('input[name="inputSeparatorGroup"][value="NEW_LINE"]').checked = true;
+  document.getElementById('deviceId').value = '{{deviceId}}';
+  document.getElementById('docNo').value = '';
+  document.getElementById('inputCodesGroup').value = '';
+  document.getElementById('inputArticleJson').value = '';
+  document.getElementById('stockCountGroupOutput').textContent = '';
+
+  resetCollapsible()
+}
+
+function openGeneratePayloadCreateStockCount(inputCountType) {
+  this.countType = inputCountType;
+  var coll = document.getElementsByClassName("collapsible");
+
+  for (let i = 0; i < coll.length; i++) {
+    coll[i].onclick = function () {
+      // ตรวจสอบว่า collapsible นี้เปิดอยู่หรือไม่
+      const isActive = this.classList.contains("active-collapsible");
+
+      // ปิด collapsible อื่นทั้งหมด
+      for (let j = 0; j < coll.length; j++) {
+        coll[j].classList.remove("active-collapsible");
+        coll[j].nextElementSibling.style.display = "none";
+      }
+
+      // หาก collapsible ที่คลิกไม่ได้เปิดอยู่ ให้เปิดใหม่
+      if (!isActive) {
+        this.classList.add("active-collapsible");
+        this.nextElementSibling.style.display = "block";
+      }
+    };
+  }
+}
+
+function resetCollapsible() {
+  var coll = document.getElementsByClassName("collapsible");
+
+  for (let i = 0; i < coll.length; i++) {
+    coll[i].classList.remove("active-collapsible");
+    coll[i].nextElementSibling.style.display = "none";
+  }
 }
