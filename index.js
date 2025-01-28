@@ -50,7 +50,9 @@ function processPrepareDispatchOrder() {
 
 function confirmTote(deliveryOrder) {
   const details = [];
-  const prefixTote = document.getElementById('prefixTote').value;
+  const inputPrefixTote = document.getElementById('prefixTote').value;
+  const prefixTotes = inputPrefixTote.split(',').map((prefix) => prefix.trim())
+
   const toteCode = document.getElementById('toteCode').value;
   let runningNumber = +document.getElementById('startRunningNumber').value;
   const packingOption = document.getElementById('packingOption').value;
@@ -58,10 +60,12 @@ function confirmTote(deliveryOrder) {
 
   for (let i = 0; i < deliveryOrder.items.length; i++) {
     const doItem = deliveryOrder.items[i];
+    const generateToteId = prefixTotes.length == 1 ? `${prefixTotes[0]}${toteCode}${String(runningNumber++).padStart(4, '0')}` :
+      `${prefixTotes[i]}${toteCode}${String(runningNumber).padStart(4, '0')}`
     details.push({
       "referenceNo": deliveryOrder.doNo,
       "sku": doItem.articleNo,
-      "toteId": packingOption === 'ONE_TOTE' ? toteId : `${prefixTote}${toteCode}${String(runningNumber++).padStart(4, '0')}`,
+      "toteId": packingOption === 'ONE_TOTE' ? toteId : generateToteId,
       "qtyOrdered": doItem.qty * doItem.unitFactor
     });
   }
