@@ -314,3 +314,14 @@ select:focus {
   overflow: hidden;
   background-color: #f1f1f1;
 }
+
+.notification {
+  padding: 15px;
+  margin: 10px 0;
+  border-radius: 5px;
+  font-size: 16px;
+}
+.info { background-color: #d9edf7; color: #31708f; }
+.success { background-color: #dff0d8; color: #3c763d; }
+.warning { background-color: #fcf8e3; color: #8a6d3b; }
+.error { background-color: #f2dede; color: #a94442; }
