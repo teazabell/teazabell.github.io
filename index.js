@@ -15,6 +15,7 @@ document.addEventListener('DOMContentLoaded', function () {
 function togglePackingOption() {
   var packingOption = document.getElementById('packingOption');
   var divOneTote = document.getElementById('one-tote-info');
+  var divRandomTote = document.getElementById('random-tote-info');
   var divSparateTote = document.getElementById('separate-tote-info');
   if (packingOption === null || divOneTote === null || divSparateTote === null) return
 
@@ -22,8 +23,14 @@ function togglePackingOption() {
   if (selectedValue === 'ONE_TOTE') {
     divOneTote.style.display = 'block';
     divSparateTote.style.display = 'none';
-  } else {
+    divRandomTote.style.display = 'none';
+  } else if (selectedValue === 'SEPARATE_TOTE') {
     divSparateTote.style.display = 'block';
+    divOneTote.style.display = 'none';
+    divRandomTote.style.display = 'none';
+  } else {
+    divRandomTote.style.display = 'block';
+    divSparateTote.style.display = 'none';
     divOneTote.style.display = 'none';
   }
 }
@@ -49,23 +56,57 @@ function processPrepareDispatchOrder() {
 }
 
 function confirmTote(deliveryOrder) {
+  const prefixToteList = [ 
+    "PL",
+    "TG", "TXG", "TTG", "TSG", "TMG", "TLG", "TDG",
+    "TXP", "TTP", "TSP", "TMP", "TLP", "TDP",
+    "TXR", "TTR", "TSR", "TMR", "TLR", "TDR",
+    "TS", "TXS", "TTS", "TSS", "TMS", "TLS", "TDS",
+    "TXB", "TTB", "TSB", "TMB", "TLB", "TDB",
+    "TXT", "TTT", "TST", "TMT", "TLT", "TDT",
+    "TXY", "TTY", "TSY", "TSYE", "TMY", "TLY", "TDY",
+    "BXG", "BTG", "BSG", "BMG", "BLG", "BDG",
+    "BXP", "BTP", "BSP", "BMP", "BLP", "BDP",
+    "BXR", "BTR", "BSR", "BMR", "BLR", "BDR",
+    "BXS", "BTS", "BSS", "BMS", "BLS", "BDS",
+    "BXB", "BTB", "BSB", "BMB", "BLB", "BDB",
+    "BXT", "BTT", "BST", "BMT", "BLT", "BDT",
+    "BXY", "BTY", "BSY", "BMY", "BLY", "BDY",
+    "TX", 
+    "TDO"
+  ];
+
   const details = [];
   const inputPrefixTote = document.getElementById('prefixTote').value;
   const prefixTotes = inputPrefixTote.split(',').map((prefix) => prefix.trim())
 
   const toteCode = document.getElementById('toteCode').value;
   let runningNumber = +document.getElementById('startRunningNumber').value;
+
+  let randomToteCode = +document.getElementById('randomToteCode').value;
+  let runningNumberForRandom = +document.getElementById('startRandomRunningNumber').value;
   const packingOption = document.getElementById('packingOption').value;
   const toteId = document.getElementById('toteId').value;
 
   for (let i = 0; i < deliveryOrder.items.length; i++) {
     const doItem = deliveryOrder.items[i];
-    const generateToteId = prefixTotes.length == 1 ? `${prefixTotes[0]}${toteCode}${String(runningNumber++).padStart(4, '0')}` :
-      `${prefixTotes[i]}${toteCode}${String(runningNumber).padStart(4, '0')}`
+
+    const randomIndex = Math.floor(Math.random() * prefixToteList.length);
+    let generateToteId;
+    if (packingOption === 'ONE_TOTE') {
+      generateToteId = toteId
+    } else if (packingOption === 'SEPARATE_TOTE') {
+      generateToteId = prefixTotes.length == 1 ? `${prefixTotes[0]}${toteCode}${String(runningNumber++).padStart(4, '0')}` :
+        `${prefixTotes[i]}${toteCode}${String(runningNumber).padStart(4, '0')}`
+    }
+    else {
+      generateToteId = `${prefixToteList[randomIndex]}${randomToteCode}${String(runningNumberForRandom++).padStart(4, '0')}`
+    }
+
     details.push({
       "referenceNo": deliveryOrder.doNo,
       "sku": doItem.articleNo,
-      "toteId": packingOption === 'ONE_TOTE' ? toteId : generateToteId,
+      "toteId": generateToteId,
       "qtyOrdered": doItem.qty * doItem.unitFactor
     });
   }
