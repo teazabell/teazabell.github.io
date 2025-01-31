@@ -689,7 +689,7 @@ function copyToClipboardV2() {
   // ใช้ Clipboard API เพื่อคัดลอกเป็น Rich Text (HTML)
   navigator.clipboard.write([new ClipboardItem({ 'text/html': new Blob([htmlContent], { type: 'text/html' }) })])
     .then(() => {
-      alert('Copied to clipboard! Now paste into Word.');
+      // alert('Copied to clipboard! Now paste into Word.');
     })
     .catch(err => {
       console.error('Error copying to clipboard:', err);
