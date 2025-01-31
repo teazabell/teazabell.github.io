@@ -621,6 +621,7 @@ function removeDashesAndEmptyLines() {
   let inputText = document.getElementById('inputRemoveSpace').value;
   inputText = inputText.replace(/หากต้องการแปลภาษาเพิ่มเติม แนะนำให้ใช้ HIX Translate ซึ่งขับเคลื่อนด้วย ChatGPT 3.5\/4 🔥/g, '');
   inputText = inputText.replace(/\(โปรดติดตามตอนต่อไป…\)/g, '');
+  inputText = inputText.replace(/#/g, '');  // ลบ # ออกทั้งหมด
   let result = inputText.replace(/^\s*[-—]+\s*$/gm, '');
   result = result.replace(/^\s*[\r\n]/gm, '');
   document.getElementById('outputRemoveSpace').textContent = result;
