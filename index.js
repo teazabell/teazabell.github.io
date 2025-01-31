@@ -619,15 +619,79 @@ function clearDataFormatter() {
 
 function removeDashesAndEmptyLines() {
   let inputText = document.getElementById('inputRemoveSpace').value;
+
+  // ลบข้อความที่ไม่ต้องการ
   inputText = inputText.replace(/หากต้องการแปลภาษาเพิ่มเติม แนะนำให้ใช้ HIX Translate ซึ่งขับเคลื่อนด้วย ChatGPT 3.5\/4 🔥/g, '');
   inputText = inputText.replace(/\(โปรดติดตามตอนต่อไป…\)/g, '');
-  inputText = inputText.replace(/#/g, '');  // ลบ # ออกทั้งหมด
+
+  // ลบขีด (เช่น --- และ —)
   let result = inputText.replace(/^\s*[-—]+\s*$/gm, '');
+
+  // ลบช่องว่างที่เกินมา (เช่น บรรทัดว่าง)
   result = result.replace(/^\s*[\r\n]/gm, '');
-  document.getElementById('outputRemoveSpace').textContent = result;
+
+  // แยกข้อความเป็นบรรทัด
+  let lines = result.split("\n");
+
+  let formattedText = "";
+  let previousWasHeading = false;
+
+  lines.forEach((line, index) => {
+    let trimmedLine = line.trim();
+
+    // ตรวจสอบว่าบรรทัดนี้เป็นหัวข้อหรือไม่
+    let isHeading = 
+      trimmedLine.length > 0 && // ไม่ใช่บรรทัดว่าง
+      (trimmedLine.length < 30 ||  // บรรทัดสั้น
+      /[:\-]$/.test(trimmedLine)); // ลงท้ายด้วย : หรือ -
+
+    if (isHeading) {
+      // เว้น 2 บรรทัดก่อนหน้าหัวข้อ
+      if (formattedText !== "") {
+        formattedText += "\n\n";
+      }
+      formattedText += trimmedLine;
+      previousWasHeading = true;
+    } else {
+      // ตรวจสอบว่ามีตัวเลขลำดับขึ้นต้นหรือไม่ (1. , 2. , 3.)
+      let numberedListMatch = trimmedLine.match(/^(\d+\.)\s+(.*)/);
+
+      if (numberedListMatch) {
+        // เว้นบรรทัดก่อนรายการเลขลำดับ
+        if (formattedText !== "") {
+          formattedText += "\n";
+        }
+        formattedText += `${numberedListMatch[1]} ${numberedListMatch[2]}`;
+      } else {
+        // ถ้าไม่ใช่หัวข้อ ให้เยื้องหน้า
+        formattedText += (previousWasHeading ? "" : "\n") + "  " + trimmedLine;
+      }
+      previousWasHeading = false;
+    }
+  });
+
+  // แทนที่ newline (`\n`) เป็น `<p>` เพื่อให้คัดลอกไป Word ได้สมบูรณ์
+  let formattedHtml = formattedText.replace(/\n/g, "<p style='text-indent: 2em; margin: 0;'>");
+
+  // แสดงผลที่หน้าเว็บ
+  document.getElementById('outputRemoveSpace').innerHTML = formattedHtml;
 }
 
 function clearDataRemoveSpace() {
   document.getElementById('inputRemoveSpace').value = '';
-  document.getElementById('outputRemoveSpace').textContent = '';
+  document.getElementById('outputRemoveSpace').innerHTML = '';
+}
+
+function copyToClipboardV2() {
+  const outputElement = document.getElementById('outputRemoveSpace');
+  const htmlContent = outputElement.innerHTML;
+
+  // ใช้ Clipboard API เพื่อคัดลอกเป็น Rich Text (HTML)
+  navigator.clipboard.write([new ClipboardItem({ 'text/html': new Blob([htmlContent], { type: 'text/html' }) })])
+    .then(() => {
+      alert('Copied to clipboard! Now paste into Word.');
+    })
+    .catch(err => {
+      console.error('Error copying to clipboard:', err);
+    });
 }
