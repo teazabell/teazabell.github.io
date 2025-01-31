@@ -1,0 +1,43 @@
+<div>
+  <h1>Array Formatter</h1>
+
+  <div class="radio-group">
+    <label for="inputSeparatorArrayFormatter" style="margin-right: 13px;">Input Separator:</label>
+    <label>
+      <input type="radio" name="inputSeparatorArrayFormatter" value="NEW_LINE" checked />New Line
+    </label>
+    <label>
+      <input type="radio" name="inputSeparatorArrayFormatter" value="COMMA" />Comma
+    </label>
+  </div>
+
+  <div class="radio-group">
+    <label for="outputSeparatorArrayFormatter">Output Separator:</label>
+    <label><input type="radio" name="outputSeparatorArrayFormatter" value="NEW_LINE" checked />New Line</label>
+    <label><input type="radio" name="outputSeparatorArrayFormatter" value="COMMA" />Comma</label>
+  </div>
+
+  <div class="radio-group">
+    <label for="outputQuoteArrayFormatter">Output Quote:</label>
+    <label><input type="radio" name="outputQuoteArrayFormatter" value="NO_QUOTE" checked />No Quote</label>
+    <label><input type="radio" name="outputQuoteArrayFormatter" value="SINGLE_QUOTE" />Single Quote</label>
+    <label><input type="radio" name="outputQuoteArrayFormatter" value="DOUBLE_QUOTE" />Double Quote</label>
+  </div>
+
+  <div class="textarea-content" style="margin-top: 20px;">
+    <label>Enter Text: </label>
+    <textarea id="inputFormatter" style="margin-top: 10px;"></textarea>
+  </div>
+
+  <div>
+    <button class="primary-button" onclick="processingFormatter()" style="margin-right: 10px;">Processing</button>
+    <button class="secondary-button" onclick="clearDataFormatter()">Clear</button>
+  </div>
+
+  <hr style="margin-top: 30px;">
+
+  <h2>Result of Sort:
+    <button class="copy-button" onclick="copyToClipboard('formatterOutput')">Copy</button>
+  </h2>
+  <div id="formatterOutput" class="payload-content"></div>
+</div>

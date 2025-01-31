@@ -56,7 +56,7 @@ function processPrepareDispatchOrder() {
 }
 
 function confirmTote(deliveryOrder) {
-  const prefixToteList = [ 
+  const prefixToteList = [
     "PL",
     "TG", "TXG", "TTG", "TSG", "TMG", "TLG", "TDG",
     "TXP", "TTP", "TSP", "TMP", "TLP", "TDP",
@@ -72,7 +72,7 @@ function confirmTote(deliveryOrder) {
     "BXB", "BTB", "BSB", "BMB", "BLB", "BDB",
     "BXT", "BTT", "BST", "BMT", "BLT", "BDT",
     "BXY", "BTY", "BSY", "BMY", "BLY", "BDY",
-    "TX", 
+    "TX",
     "TDO"
   ];
 
@@ -567,4 +567,52 @@ function resetCollapsible() {
     coll[i].classList.remove("active-collapsible");
     coll[i].nextElementSibling.style.display = "none";
   }
+}
+
+function processingFormatter(ascending = true) {
+  try {
+    // Retrieve input separator selection
+    const selectedInputSeparator = document.querySelector('input[name="inputSeparatorArrayFormatter"]:checked');
+    const inputSeparator = selectedInputSeparator ? selectedInputSeparator.value : null;
+
+    // Retrieve output separator selection
+    const selectedOutputSeparator = document.querySelector('input[name="outputSeparatorArrayFormatter"]:checked');
+    const outputSeparator = selectedOutputSeparator ? selectedOutputSeparator.value : null;
+
+    const selectedOutputQuote = document.querySelector('input[name="outputQuoteArrayFormatter"]:checked');
+    const outputQuote = selectedOutputQuote ? selectedOutputQuote.value : null;
+
+    // Get input text and split into an array based on the input separator
+    const inputText = document.getElementById('inputFormatter').value;
+    const cleanString = inputText.replace(/["']/g, '');
+    const thaiStrings = inputSeparator === 'NEW_LINE' ? cleanString.split('\n') : cleanString.split(',');
+
+    // Join strings based on output separator and display result
+
+    document.getElementById('formatterOutput').textContent = outputSeparator === 'NEW_LINE'
+      ? thaiStrings.map(str => formatQuote(outputQuote, str)).join('\n')
+      : thaiStrings.map(str => formatQuote(outputQuote, str)).join(',');
+  } catch (error) {
+    document.getElementById('formatterOutput').textContent = 'Invalid Text';
+  }
+}
+
+function formatQuote(quoteType, str) {
+  if (quoteType === 'DOUBLE_QUOTE') {
+    return `"${str}"`
+  }
+  else if (quoteType === 'SINGLE_QUOTE') {
+    return `'${str}'`
+  }
+  else {
+    return str
+  }
+}
+
+function clearDataFormatter() {
+  document.querySelector('input[name="inputSeparatorArrayFormatter"][value="NEW_LINE"]').checked = true;
+  document.querySelector('input[name="outputSeparatorArrayFormatter"][value="NEW_LINE"]').checked = true;
+  document.querySelector('input[name="outputQuoteArrayFormatter"][value="NO_QUOTE"]').checked = true;
+  document.getElementById('inputFormatter').value = '';
+  document.getElementById('formatterOutput').textContent = '';
 }
