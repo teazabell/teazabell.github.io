@@ -8,7 +8,7 @@ window.onload = function () {
 document.addEventListener('DOMContentLoaded', function () {
   const packingOption = document.getElementById('packingOption');
   if (packingOption) {
-    packingOption.value = 'SEPARATE_TOTE';
+    packingOption.value = 'RANDOM_TOTE';
   }
 });
 
@@ -208,6 +208,11 @@ function clearDataDispatchOrder() {
   document.getElementById('driverName').value = '';
   document.getElementById('confirmToteOutput').textContent = '';
   document.getElementById('confirmShipmentOutput').textContent = '';
+  const packingOption = document.getElementById('packingOption');
+  if (packingOption) {
+    packingOption.value = 'RANDOM_TOTE';
+    togglePackingOption();
+  }
 }
 
 function copyToClipboard(elementId) {

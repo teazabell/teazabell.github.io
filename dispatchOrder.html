@@ -12,9 +12,9 @@
   <div class="form-group" style="margin-bottom: 10px;">
     <label for="packingOption" class="text-red" style="font-size: 20px;">Packing Options:</label>
     <select id="packingOption" name="packingOption" onchange="togglePackingOption()" style="width: 25em;">
-      <option value="SEPARATE_TOTE" selected>ระบุ Prefix Tote สำหรับหลาย Product</option>
-      <option value="ONE_TOTE">1 Tote สำหรับทุก Product</option>
-      <option value="RANDOM_TOTE">Random Prefix Tote</option>
+      <option value="RANDOM_TOTE" selected>Random Prefix Tote</option>
+      <option value="SEPARATE_TOTE">Specific single-prefix tote or Multiple-prefix totes</option>
+      <option value="ONE_TOTE">Single Tote for all products</option>
     </select>
   </div>
 
@@ -30,9 +30,8 @@
     <div class="form-group">
       <label for="prefixTote">Prefix Tote:</label>
       <input type="text" id="prefixTote" placeholder="Enter Prefix Tote">
-      <small class="form-text text-muted" style="margin-left: 10px;">เช่น PL, TG, TS, TX, etc.</small>
-      <small class="form-text text-muted" style="margin-left: 10px;">(สามารถใส่หลายๆ prefix ได้ โดยจะ generate running
-        number เป็นเลขเดียวกัน แต่จำนวนต้องเท่ากับจำนวน product เช่น TG,TXS,TTT)</small>
+      <small class="form-text text-muted" style="margin-left: 10px;">ระบุ 1 prefix tote เช่น PL, TG, TS, TX, etc. (running no เดียวกัน)</small>
+      <small class="form-text text-muted" style="margin-left: 10px;">หรือระบุหลาย prefix แต่จำนวน prefix tote ต้องเท่ากับจำนวน products (running number รันไปเรื่อยๆ) เช่น 3 product -> TG,TXS,TTT</small>
     </div>
 
     <div class="form-group">
