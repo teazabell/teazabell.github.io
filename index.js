@@ -1,5 +1,5 @@
 const countType = null;
-
+var toteMap = new Map()
 window.onload = function () {
   toggleInputBox();
   togglePackingOption();
@@ -49,13 +49,15 @@ function processPrepareDispatchOrder() {
 
     document.getElementById('confirmToteOutput').textContent = confirmToteJson;
     document.getElementById('confirmShipmentOutput').textContent = confirmShipmentJson;
+
+    renderToteTable(toteMap)
   } catch (error) {
     document.getElementById('confirmToteOutput').textContent = 'Invalid JSON';
     document.getElementById('confirmShipmentOutput').textContent = 'Invalid JSON';
   }
 }
 
-function confirmTote(deliveryOrder) {
+function generateToteIdList(itemCount) {
   const prefixToteList = [
     "PL",
     "TG", "TXG", "TTG", "TSG", "TMG", "TLG", "TDG",
@@ -76,37 +78,60 @@ function confirmTote(deliveryOrder) {
     "TDO"
   ];
 
-  const details = [];
   const inputPrefixTote = document.getElementById('prefixTote').value;
-  const prefixTotes = inputPrefixTote.split(',').map((prefix) => prefix.trim())
+  const prefixTotes = inputPrefixTote.split(',').map((prefix) => prefix.trim());
 
   const toteCode = document.getElementById('toteCode').value;
-  let runningNumber = +document.getElementById('startRunningNumber').value;
-
-  let randomToteCode = +document.getElementById('randomToteCode').value;
-  let runningNumberForRandom = +document.getElementById('startRandomRunningNumber').value;
+  const runningStart = +document.getElementById('startRunningNumber').value;
+  const randomToteCode = document.getElementById('randomToteCode').value;
+  const runningRandomStart = +document.getElementById('startRandomRunningNumber').value;
   const packingOption = document.getElementById('packingOption').value;
   const toteId = document.getElementById('toteId').value;
 
-  for (let i = 0; i < deliveryOrder.items.length; i++) {
+  const toteIdList = [];
+
+  for (let i = 0; i < itemCount; i++) {
+    let generated;
+
+    if (packingOption === 'ONE_TOTE') {
+      generated = toteId;
+
+    } else if (packingOption === 'SEPARATE_TOTE') {
+      const prefix = prefixTotes.length === 1 ? prefixTotes[0] : prefixTotes[i] || prefixTotes[0];
+      generated = `${prefix}${toteCode}${String(runningStart + i).padStart(4, '0')}`;
+
+    } else {
+      const randomIndex = Math.floor(Math.random() * prefixToteList.length);
+      generated = `${prefixToteList[randomIndex]}${randomToteCode}${String(runningRandomStart + i).padStart(4, '0')}`;
+    }
+    toteIdList.push(generated);
+  }
+
+  return toteIdList;
+}
+
+function confirmTote(deliveryOrder) {
+  const details = [];
+  const itemCount = deliveryOrder.items.length;
+  const toteIdList = generateToteIdList(itemCount)
+
+  toteMap = new Map()
+  for (let i = 0; i < itemCount; i++) {
     const doItem = deliveryOrder.items[i];
 
-    const randomIndex = Math.floor(Math.random() * prefixToteList.length);
-    let generateToteId;
-    if (packingOption === 'ONE_TOTE') {
-      generateToteId = toteId
-    } else if (packingOption === 'SEPARATE_TOTE') {
-      generateToteId = prefixTotes.length == 1 ? `${prefixTotes[0]}${toteCode}${String(runningNumber++).padStart(4, '0')}` :
-        `${prefixTotes[i]}${toteCode}${String(runningNumber).padStart(4, '0')}`
+    const articleNo = doItem.articleNo; 
+    const toteId = toteIdList[i]
+
+    // Update toteMap
+    if (!toteMap.has(toteId)) {
+      toteMap.set(toteId, []);
     }
-    else {
-      generateToteId = `${prefixToteList[randomIndex]}${randomToteCode}${String(runningNumberForRandom++).padStart(4, '0')}`
-    }
+    toteMap.get(toteId).push(articleNo);
 
     details.push({
       "referenceNo": deliveryOrder.doNo,
       "sku": doItem.articleNo,
-      "toteId": generateToteId,
+      "toteId": toteIdList[i],
       "qtyOrdered": doItem.qty * doItem.unitFactor
     });
   }
@@ -193,6 +218,18 @@ function generateDateTime(date) {
   return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
 }
 
+function generateDateTimeTDSC(date) {
+  const now = date ? new Date(date) : new Date();
+  const year = now.getFullYear();
+  const month = String(now.getMonth() + 1).padStart(2, '0');
+  const day = String(now.getDate()).padStart(2, '0');
+  const hours = String(now.getHours()).padStart(2, '0');
+  const minutes = String(now.getMinutes()).padStart(2, '0');
+  const seconds = String(now.getSeconds()).padStart(2, '0');
+
+  return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}.0`;
+}
+
 function generateDate(date) {
   const now = date ? new Date(date) : new Date();
   const year = now.getFullYear();
@@ -200,6 +237,31 @@ function generateDate(date) {
   const day = String(now.getDate()).padStart(2, '0');
 
   return `${year}-${month}-${day}`;
+}
+
+function generateCompactDateTime(date) {
+  const now = date ? new Date(date) : new Date();
+  const pad = (n, len = 2) => String(n).padStart(len, '0');
+
+  const year = now.getFullYear();
+  const month = pad(now.getMonth() + 1);
+  const day = pad(now.getDate());
+  const hours = pad(now.getHours());
+  const minutes = pad(now.getMinutes());
+  const seconds = pad(now.getSeconds());
+
+  return `${year}${month}${day}${hours}${minutes}${seconds}`;
+}
+
+function formatTimeHHmmssSSS(date = new Date()) {
+  const pad = (num, size) => num.toString().padStart(size, "0");
+
+  const hours = pad(date.getHours(), 2);
+  const minutes = pad(date.getMinutes(), 2);
+  const seconds = pad(date.getSeconds(), 2);
+  const millis = pad(date.getMilliseconds(), 3);
+
+  return `${hours}${minutes}${seconds}${millis}`;
 }
 
 function clearDataDispatchOrder() {
@@ -645,10 +707,10 @@ function removeDashesAndEmptyLines() {
     let trimmedLine = line.trim();
 
     // ตรวจสอบว่าบรรทัดนี้เป็นหัวข้อหรือไม่
-    let isHeading = 
+    let isHeading =
       trimmedLine.length > 0 && // ไม่ใช่บรรทัดว่าง
       (trimmedLine.length < 30 ||  // บรรทัดสั้น
-      /[:\-]$/.test(trimmedLine)); // ลงท้ายด้วย : หรือ -
+        /[:\-]$/.test(trimmedLine)); // ลงท้ายด้วย : หรือ -
 
     if (isHeading) {
       // เว้น 2 บรรทัดก่อนหน้าหัวข้อ
@@ -699,4 +761,126 @@ function copyToClipboardV2() {
     .catch(err => {
       console.error('Error copying to clipboard:', err);
     });
+}
+
+function exportDispatchOrderTDSCCSV() {
+  const headers = [
+    "01", "shipmentNo", "doNo", "barcode", "pickedQty", "uom", "toteId", "deliverydate",
+    "pickupdate", "couriercode", "couriername", "drivername", "truckId", "plateno",
+    "loadingNo", "priceDate"
+  ];
+
+  const inputDeliveryOrder = document.getElementById('inputDoDispatchOrder').value;
+  let deliveryOrder = JSON.parse(inputDeliveryOrder);
+
+  const now = new Date()
+  const currentDateTime = generateDateTimeTDSC(now)
+  const currentDate = generateDate(now)
+  const plateNo = document.getElementById('platNo').value;
+  const driverName = document.getElementById('driverName').value;
+  const itemCount = deliveryOrder.items.length;
+  const toteIdList = generateToteIdList(itemCount)
+
+  const rows = []
+  toteMap = new Map()
+  for (let i = 0; i < itemCount; i++) {
+    const doItem = deliveryOrder.items[i];
+    let productName = doItem.productName ?? "";
+
+    if (productName.includes(",")) {
+      productName = `"${productName}"`;
+    }
+
+    const articleNo = doItem.articleNo; 
+    const toteId = toteIdList[i]
+    // Update toteMap
+    if (!toteMap.has(toteId)) {
+      toteMap.set(toteId, []);
+    }
+    toteMap.get(toteId).push(articleNo);
+
+    rows.push([
+      "01",
+      `SO-${deliveryOrder.doNo}`,
+      deliveryOrder.doNo,
+      doItem.barcode,
+      doItem.assignedQty,
+      doItem.crossDock.unit, //TODO
+      toteId,
+      currentDateTime,
+      currentDateTime,
+      driverName,
+      `Truck@Galaxy`,
+      plateNo,
+      `LD${generateCompactDateTime(now)}`,
+      currentDate
+    ]);
+  }
+
+  const csvArray = [headers, ...rows];
+
+  const csvContent = csvArray
+    .map(row => {
+      while (row.length > 1 && row[row.length - 1] === "") {
+        row.pop();
+      }
+      return row.join("|");
+    })
+    .join("\n");
+
+  const BOM = "\uFEFF";
+
+  const blob = new Blob([BOM + csvContent], { type: "text/csv;charset=utf-8;" });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = `dev_cjx_shipment_${deliveryOrder.doNo}.csv`
+  link.click();
+
+  renderToteTable(toteMap);
+}
+
+function renderToteTable(map) {
+  const container = document.getElementById("tableContainer");
+
+  // สร้าง table
+  const table = document.createElement("table");
+  table.style.borderCollapse = "collapse";
+  table.style.width = "100%";
+  table.border = "1";
+
+  // สร้าง head
+  const thead = document.createElement("thead");
+  thead.innerHTML = `
+    <tr>
+      <th style="border: 1px solid #ccc; padding: 8px;">Tote ID</th>
+      <th style="border: 1px solid #ccc; padding: 8px;">Product (Article No)</th>
+    </tr>
+  `;
+  table.appendChild(thead);
+
+  // สร้าง body
+  const tbody = document.createElement("tbody");
+
+  map.forEach((articleList, toteId) => {
+    const row = document.createElement("tr");
+
+    const tdToteId = document.createElement("td");
+    tdToteId.style.border = "1px solid #ccc";
+    tdToteId.style.padding = "8px";
+    tdToteId.textContent = toteId;
+
+    const tdArticles = document.createElement("td");
+    tdArticles.style.border = "1px solid #ccc";
+    tdArticles.style.padding = "8px";
+    tdArticles.textContent = articleList.join(", ");
+
+    row.appendChild(tdToteId);
+    row.appendChild(tdArticles);
+    tbody.appendChild(row);
+  });
+
+  table.appendChild(tbody);
+  container.innerHTML = "";
+  container.appendChild(table);
 }
