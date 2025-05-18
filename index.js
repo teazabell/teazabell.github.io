@@ -285,7 +285,17 @@ function copyToClipboard(elementId) {
   window.getSelection().addRange(range);
   document.execCommand('copy');
   window.getSelection().removeAllRanges();
-  alert('Copied to clipboard!');
+  showCenterToast('Copied to clipboard!');
+}
+
+function showCenterToast(message, duration = 2000) {
+  const toast = document.getElementById('centerToast');
+  toast.textContent = message;
+  toast.classList.add('show');
+
+  setTimeout(() => {
+    toast.classList.remove('show');
+  }, duration);
 }
 
 function processPrepareSubmitGr() {
@@ -507,6 +517,7 @@ function clearDataSorting() {
   document.querySelector('input[name="outputSeparator"][value="NEW_LINE"]').checked = true;
   document.getElementById('inputText').value = '';
   document.getElementById('sortingOutput').textContent = '';
+  document.getElementById('sortStatus').textContent = '';
 
   isAscending = true
   const sortButton = document.getElementById('sortButton');
@@ -527,11 +538,13 @@ function toggleSortOrder() {
     icon.className = 'fas fa-sort-amount-down-alt';
     sortButton.textContent = ' Sort Z to A';
     sortButton.prepend(icon);
+    document.getElementById('sortStatus').textContent = 'ASCENDING';
   } else {
     processingThaiLocalSorting(false);
     icon.className = 'fas fa-sort-amount-up-alt';
     sortButton.textContent = ' Sort A to Z';
     sortButton.prepend(icon);
+    document.getElementById('sortStatus').textContent = 'DESCENDING';
   }
 
   isAscending = !isAscending;
