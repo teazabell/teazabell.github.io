@@ -119,14 +119,14 @@ function confirmTote(deliveryOrder) {
   for (let i = 0; i < itemCount; i++) {
     const doItem = deliveryOrder.items[i];
 
-    const articleNo = doItem.articleNo; 
+    const barcode = doItem.barcode;
     const toteId = toteIdList[i]
 
     // Update toteMap
     if (!toteMap.has(toteId)) {
       toteMap.set(toteId, []);
     }
-    toteMap.get(toteId).push(articleNo);
+    toteMap.get(toteId).push(barcode);
 
     details.push({
       "referenceNo": deliveryOrder.doNo,
@@ -652,13 +652,20 @@ function processingFormatter(ascending = true) {
     // Get input text and split into an array based on the input separator
     const inputText = document.getElementById('inputFormatter').value;
     const cleanString = inputText.replace(/["']/g, '');
-    const thaiStrings = inputSeparator === 'NEW_LINE' ? cleanString.split('\n') : cleanString.split(',');
+    const thaiStrings = inputSeparator === 'NEW_LINE' ? cleanString.split('\n').filter(str => str.trim() !== '') : cleanString.split(',');
 
     // Join strings based on output separator and display result
 
-    document.getElementById('formatterOutput').textContent = outputSeparator === 'NEW_LINE'
-      ? thaiStrings.map(str => formatQuote(outputQuote, str)).join('\n')
-      : thaiStrings.map(str => formatQuote(outputQuote, str)).join(',');
+    let formattedText;
+    if (outputSeparator === 'NEW_LINE') {
+      formattedText = thaiStrings.map(str => formatQuote(outputQuote, str)).join('\n');
+    } else if (outputSeparator === 'COMMA_NEWLINE') {
+      formattedText = thaiStrings.map(str => formatQuote(outputQuote, str)).join(',\n');
+    } else {
+      formattedText = thaiStrings.map(str => formatQuote(outputQuote, str)).join(',');
+    }
+
+    document.getElementById('formatterOutput').textContent = formattedText;
   } catch (error) {
     document.getElementById('formatterOutput').textContent = 'Invalid Text';
   }
@@ -780,6 +787,7 @@ function exportDispatchOrderTDSCCSV() {
   const driverName = document.getElementById('driverName').value;
   const itemCount = deliveryOrder.items.length;
   const toteIdList = generateToteIdList(itemCount)
+  const priceDate = document.getElementById('priceDate').value;
 
   const rows = []
   toteMap = new Map()
@@ -791,29 +799,31 @@ function exportDispatchOrderTDSCCSV() {
       productName = `"${productName}"`;
     }
 
-    const articleNo = doItem.articleNo; 
+    const barcode = doItem.barcode;
     const toteId = toteIdList[i]
     // Update toteMap
     if (!toteMap.has(toteId)) {
       toteMap.set(toteId, []);
     }
-    toteMap.get(toteId).push(articleNo);
+    toteMap.get(toteId).push(barcode);
 
     rows.push([
       "01",
       `SO-${deliveryOrder.doNo}`,
       deliveryOrder.doNo,
       doItem.barcode,
-      doItem.assignedQty,
+      (doItem.assignedQty).toFixed(2),
       doItem.crossDock.unit, //TODO
       toteId,
       currentDateTime,
       currentDateTime,
+      "",
+      "",
       driverName,
       `Truck@Galaxy`,
-      plateNo,
+      "",
       `LD${generateCompactDateTime(now)}`,
-      currentDate
+      priceDate == null ? 'YYYY-MM-DD' : priceDate
     ]);
   }
 
@@ -834,7 +844,7 @@ function exportDispatchOrderTDSCCSV() {
   const url = URL.createObjectURL(blob);
   const link = document.createElement("a");
   link.href = url;
-  link.download = `dev_cjx_shipment_${deliveryOrder.doNo}.csv`
+  link.download = `shipment_${deliveryOrder.doNo}.csv`
   link.click();
 
   renderToteTable(toteMap);
@@ -842,27 +852,29 @@ function exportDispatchOrderTDSCCSV() {
 
 function renderToteTable(map) {
   const container = document.getElementById("tableContainer");
+  container.innerHTML = "";
 
-  // สร้าง table
+  const header = document.createElement("h3");
+  header.textContent = "Tote Information";
+  container.appendChild(header);
+
   const table = document.createElement("table");
   table.style.borderCollapse = "collapse";
   table.style.width = "100%";
   table.border = "1";
 
-  // สร้าง head
   const thead = document.createElement("thead");
   thead.innerHTML = `
     <tr>
       <th style="border: 1px solid #ccc; padding: 8px;">Tote ID</th>
-      <th style="border: 1px solid #ccc; padding: 8px;">Product (Article No)</th>
+      <th style="border: 1px solid #ccc; padding: 8px;">Barcode</th>
     </tr>
   `;
   table.appendChild(thead);
 
-  // สร้าง body
   const tbody = document.createElement("tbody");
 
-  map.forEach((articleList, toteId) => {
+  map.forEach((barcodes, toteId) => {
     const row = document.createElement("tr");
 
     const tdToteId = document.createElement("td");
@@ -870,17 +882,16 @@ function renderToteTable(map) {
     tdToteId.style.padding = "8px";
     tdToteId.textContent = toteId;
 
-    const tdArticles = document.createElement("td");
-    tdArticles.style.border = "1px solid #ccc";
-    tdArticles.style.padding = "8px";
-    tdArticles.textContent = articleList.join(", ");
+    const tdBarcodes = document.createElement("td");
+    tdBarcodes.style.border = "1px solid #ccc";
+    tdBarcodes.style.padding = "8px";
+    tdBarcodes.textContent = barcodes.join(", ");
 
     row.appendChild(tdToteId);
-    row.appendChild(tdArticles);
+    row.appendChild(tdBarcodes);
     tbody.appendChild(row);
   });
 
   table.appendChild(tbody);
-  container.innerHTML = "";
   container.appendChild(table);
 }

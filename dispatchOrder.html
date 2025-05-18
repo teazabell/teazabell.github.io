@@ -1,5 +1,5 @@
 <div>
-  <h1>Generate Payload Dispatch Order</h1>
+  <h1>Generate Payload Dispatch Order (Keep Stock)</h1>
   <div class="notification info">New feature random Prefix Tote. 🎉</div>
   <p><b>Step1:</b> Go to mongodb collection <b>order.delivery_orders</b> then right click at your document and select
     copy > <b>Copy Value as Plain Text</b></p>
@@ -30,8 +30,10 @@
     <div class="form-group">
       <label for="prefixTote">Prefix Tote:</label>
       <input type="text" id="prefixTote" placeholder="Enter Prefix Tote">
-      <small class="form-text text-muted" style="margin-left: 10px;">ระบุ 1 prefix tote เช่น PL, TG, TS, TX, etc. (running no เดียวกัน)</small>
-      <small class="form-text text-muted" style="margin-left: 10px;">หรือระบุหลาย prefix แต่จำนวน prefix tote ต้องเท่ากับจำนวน products (running number รันไปเรื่อยๆ) เช่น 3 product -> TG,TXS,TTT</small>
+      <small class="form-text text-muted" style="margin-left: 10px;">ระบุ 1 prefix tote เช่น PL, TG, TS, TX, etc.
+        (running no เดียวกัน)</small>
+      <small class="form-text text-muted" style="margin-left: 10px;">หรือระบุหลาย prefix แต่จำนวน prefix tote
+        ต้องเท่ากับจำนวน products (running number รันไปเรื่อยๆ) เช่น 3 product -> TG,TXS,TTT</small>
     </div>
 
     <div class="form-group">
@@ -68,12 +70,12 @@
   <h3>Fill in Shipment information</h3>
   <div class="form-group">
     <label for="platNo">Plat No:</label>
-    <input type="text" id="platNo" placeholder="Enter PlatNo" value="กข1234">
+    <input type="text" id="platNo" placeholder="Enter PlatNo" value="GX1234">
   </div>
 
   <div class="form-group">
     <label for="driverName">Driver Name:</label>
-    <input type="text" id="driverName" placeholder="Enter DriverName" value="โดมินิค โทเรตโต้">
+    <input type="text" id="driverName" placeholder="Enter DriverName" value="Dominic Toretto">
   </div>
 
   <div>
@@ -85,7 +87,6 @@
   <hr style="margin-top: 30px;">
   <div id="tableContainer"></div>
 
-  <hr style="margin-top: 30px;">
 
   <h2>Payload Confirm Tote Output:
     <button class="copy-button" onclick="copyToClipboard('confirmToteOutput')">Copy</button>

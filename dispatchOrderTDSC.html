@@ -1,5 +1,5 @@
 <div>
-  <h1>Generate Payload Dispatch Order (TDSC)</h1>
+  <h1>Generate Payload Dispatch Order (Cross Dock)</h1>
   <div class="notification info">New feature random Prefix Tote. 🎉</div>
   <p><b>Step1:</b> Go to mongodb collection <b>order.delivery_orders</b> then right click at your document and select
     copy > <b>Copy Value as Plain Text</b></p>
@@ -68,16 +68,22 @@
   <h3>Fill in Shipment information</h3>
   <div class="form-group">
     <label for="platNo">Plat No:</label>
-    <input type="text" id="platNo" placeholder="Enter PlatNo" value="กข1234">
+    <input type="text" id="platNo" placeholder="Enter PlatNo" value="GX1234">
   </div>
 
   <div class="form-group">
     <label for="driverName">Driver Name:</label>
-    <input type="text" id="driverName" placeholder="Enter DriverName" value="โดมินิค โทเรตโต้">
+    <input type="text" id="driverName" placeholder="Enter DriverName" value="Dominic Toretto">
+  </div>
+
+  <div class="form-group">
+    <label for="priceDate">Price Date:</label>
+    <input type="text" id="priceDate" placeholder="YYYY-MM-DD">
+     <small class="form-text text-muted" style="margin-left: 10px;">ดึงข้อมูลจาก stock.external_prices โดยใช้ barcode และเลือกรายการที่มี createdDate ล่าสุด (มีผลกับทุก item อาจจะต้องไปแก้ไขเพิ่มเองในภายหลัง)</small>
   </div>
 
   <div>
-    <button onclick="exportDispatchOrderTDSCCSV()">Export CSV</button>
+    <button class="primary-button" onclick="exportDispatchOrderTDSCCSV()">Export CSV</button>
     <button class="secondary-button" onclick="clearDataDispatchOrder()">Clear</button>
   </div>
 
