@@ -31,15 +31,10 @@
 
   <hr style="margin-top: 30px;">
 
-  <!-- <h2>Result of Sort: <div id="sortStatus"></div>
-    <button class="copy-button" onclick="copyToClipboard('sortingOutput')">Copy</button>
-  </h2>
-  <div id="sortingOutput" class="payload-content"></div> -->
-
   <div>
     <span style="font-size: 24px; font-weight: 500;">Result of Sort:</span>
     <span id="sortStatus" class="sort-status"></span>
-    <button class="copy-button" onclick="copyToClipboard('sortingOutput')">Copy</button>
+    <button id="copySortingOutput" class="copy-button" onclick="copyToClipboard('sortingOutput', 'copySortingOutput')"><i class="fa-regular fa-copy"></i> Copy</button>
     
   </div>
 

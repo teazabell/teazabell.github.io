@@ -277,7 +277,7 @@ function clearDataDispatchOrder() {
   }
 }
 
-function copyToClipboard(elementId) {
+function copyToClipboard(elementId, copyId) {
   const outputElement = document.getElementById(elementId);
   const range = document.createRange();
   range.selectNode(outputElement);
@@ -285,7 +285,15 @@ function copyToClipboard(elementId) {
   window.getSelection().addRange(range);
   document.execCommand('copy');
   window.getSelection().removeAllRanges();
-  showCenterToast('Copied to clipboard!');
+
+  const copyButton = document.getElementById(copyId);
+  copyButton.innerHTML = '<i class="fa-solid fa-check"></i> Copied!';
+  copyButton.disabled = true;
+
+  setTimeout(() => {
+      copyButton.innerHTML = '<i class="fa-regular fa-copy"></i> Copy';
+      copyButton.disabled = false;
+    }, 2000);
 }
 
 function showCenterToast(message, duration = 2000) {
@@ -862,16 +870,26 @@ function exportDispatchOrderTDSCCSV() {
 
   renderToteTable(toteMap);
 }
-
 function renderToteTable(map) {
   const container = document.getElementById("tableContainer");
   container.innerHTML = "";
 
+  // Header
+  const headerWrapper = document.createElement("div");
+  headerWrapper.style.display = "flex";
+  headerWrapper.style.justifyContent = "space-between";
+  headerWrapper.style.alignItems = "center";
+  headerWrapper.style.marginBottom = "8px";
+
   const header = document.createElement("h3");
   header.textContent = "Tote Information";
-  container.appendChild(header);
+  headerWrapper.appendChild(header);
 
+  container.appendChild(headerWrapper);
+
+  // Table
   const table = document.createElement("table");
+  table.id = "toteTable";
   table.style.borderCollapse = "collapse";
   table.style.width = "100%";
   table.border = "1";
@@ -886,20 +904,75 @@ function renderToteTable(map) {
   table.appendChild(thead);
 
   const tbody = document.createElement("tbody");
-
   map.forEach((barcodes, toteId) => {
     const row = document.createElement("tr");
 
+    // Tote ID column
     const tdToteId = document.createElement("td");
     tdToteId.style.border = "1px solid #ccc";
     tdToteId.style.padding = "8px";
-    tdToteId.textContent = toteId;
 
+    const spanTote = document.createElement("span");
+    spanTote.textContent = toteId;
+    spanTote.style.marginRight = "8px";
+
+    const copyToteBtn = document.createElement("button");
+    copyToteBtn.className = "copy-button";
+    copyToteBtn.style.border = "none";
+    copyToteBtn.style.background = "none";
+    copyToteBtn.style.cursor = "pointer";
+    copyToteBtn.style.fontSize = "14px";
+    copyToteBtn.style.color = "black";
+    copyToteBtn.innerHTML = '<i class="fas fa-regular fa-copy"></i>';
+    copyToteBtn.title = "Copy Tote ID";
+    copyToteBtn.onclick = () => {
+      navigator.clipboard.writeText(toteId).then(() => {
+        copyToteBtn.innerHTML = '<i class="fa-solid fa-check"></i>';
+        copyToteBtn.disabled = true;
+        setTimeout(() => {
+          copyToteBtn.innerHTML = '<i class="fas fa-regular fa-copy"></i>';
+          copyToteBtn.disabled = false;
+        }, 1500);
+      });
+    };
+
+    tdToteId.appendChild(copyToteBtn);
+    tdToteId.appendChild(spanTote);
+
+    // Barcode column
     const tdBarcodes = document.createElement("td");
     tdBarcodes.style.border = "1px solid #ccc";
     tdBarcodes.style.padding = "8px";
-    tdBarcodes.textContent = barcodes.join(", ");
 
+    const spanBarcode = document.createElement("span");
+    const barcodeText = barcodes.join(", ");
+    spanBarcode.textContent = barcodeText;
+    spanBarcode.style.marginRight = "8px";
+
+    const copyBarcodeBtn = document.createElement("button");
+    copyBarcodeBtn.className = "copy-button";
+    copyBarcodeBtn.style.border = "none";
+    copyBarcodeBtn.style.background = "none";
+    copyBarcodeBtn.style.cursor = "pointer";
+    copyBarcodeBtn.style.fontSize = "14px";
+    copyBarcodeBtn.style.color = "black";
+    copyBarcodeBtn.innerHTML = '<i class="fas fa-regular fa-copy"></i>';
+    copyBarcodeBtn.title = "Copy Barcode(s)";
+    copyBarcodeBtn.onclick = () => {
+      navigator.clipboard.writeText(barcodeText).then(() => {
+        copyBarcodeBtn.innerHTML = '<i class="fa-solid fa-check"></i>';
+        copyBarcodeBtn.disabled = true;
+        setTimeout(() => {
+          copyBarcodeBtn.innerHTML = '<i class="fas fa-regular fa-copy"></i>';
+          copyBarcodeBtn.disabled = false;
+        }, 1500);
+      });
+    };
+
+    tdBarcodes.appendChild(copyBarcodeBtn);
+    tdBarcodes.appendChild(spanBarcode);
+
+    // Add to row
     row.appendChild(tdToteId);
     row.appendChild(tdBarcodes);
     tbody.appendChild(row);
