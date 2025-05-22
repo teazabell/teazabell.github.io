@@ -844,7 +844,7 @@ function exportDispatchOrderTDSCCSV() {
       `Truck@Galaxy`,
       "",
       `LD${generateCompactDateTime(now)}`,
-      priceDate == null ? 'YYYY-MM-DD' : priceDate
+      priceDate == null || priceDate == '' ? 'YYYY-MM-DD' : priceDate
     ]);
   }
 
