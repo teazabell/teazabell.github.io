@@ -2,8 +2,18 @@
   <h1>Stock Count Group</h1>
 
   <div class="form-group">
-    <label for="docNo">Doc No:</label>
-    <input type="text" id="docNo" placeholder="Enter Doc No" value="SU25-000xxx" style="width: 500px !important;">
+    <label for="groupType">Group Type Options:</label>
+    <select id="groupType" name="groupType" onchange="toggleGroupType()" style="width: 25em;">
+      <option value="STORE" selected>Store</option>
+      <option value="QI">QI</option>
+    </select>
+  </div>
+
+  <div id="divDocNo">
+    <div class="form-group">
+      <label for="docNo">Doc No:</label>
+      <input type="text" id="docNo" placeholder="Enter Doc No" value="SU25-000xxx" style="width: 500px !important;">
+    </div>
   </div>
 
   <div class="form-group">
@@ -54,7 +64,9 @@
   <hr style="margin-top: 30px;">
 
   <h2>Payload Output:
-    <button id="copyStockCountGroupOutput" class="copy-button" onclick="copyToClipboard('stockCountGroupOutput', 'copyStockCountGroupOutput')"><i class="fa-regular fa-copy"></i> Copy</button>
+    <button id="copyStockCountGroupOutput" class="copy-button"
+      onclick="copyToClipboard('stockCountGroupOutput', 'copyStockCountGroupOutput')"><i class="fa-regular fa-copy"></i>
+      Copy</button>
   </h2>
   <div id="stockCountGroupOutput" class="payload-content"></div>
 </div>

@@ -291,9 +291,9 @@ function copyToClipboard(elementId, copyId) {
   copyButton.disabled = true;
 
   setTimeout(() => {
-      copyButton.innerHTML = '<i class="fa-regular fa-copy"></i> Copy';
-      copyButton.disabled = false;
-    }, 2000);
+    copyButton.innerHTML = '<i class="fa-regular fa-copy"></i> Copy';
+    copyButton.disabled = false;
+  }, 2000);
 }
 
 function showCenterToast(message, duration = 2000) {
@@ -562,15 +562,16 @@ function processPrepareCreateStockCountGroup() {
   try {
     const docNo = document.getElementById('docNo').value;
     const deviceId = document.getElementById('deviceId').value;
+    const groupType = document.getElementById('groupType').value;
 
     const items = this.countType == 'CLASS' ? generatePayloadTypeClass() : generatePayloadTypeArticle()
 
     const payload = {
-      docNo: docNo,
-      stockCountGroupType: "STORE",
+      ...(groupType === 'STORE' && { docNo }),
+      stockCountGroupType: groupType,
       stockCountItemType: this.countType,
-      items: items,
-      deviceId: deviceId,
+      items,
+      deviceId,
       modeSetting: "GR_INCLUDED"
     }
 
@@ -980,4 +981,17 @@ function renderToteTable(map) {
 
   table.appendChild(tbody);
   container.appendChild(table);
+}
+
+function toggleGroupType() {
+  var groupTypeOption = document.getElementById('groupType');
+  var divDocNo = document.getElementById('divDocNo');
+  if (groupTypeOption === null || divDocNo === null) return
+
+  var selectedValue = groupTypeOption.value;
+  if (selectedValue === 'STORE') {
+    divDocNo.style.display = 'block';
+  } else {
+    divDocNo.style.display = 'none';
+  }
 }
