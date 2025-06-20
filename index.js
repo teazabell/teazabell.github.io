@@ -1145,7 +1145,7 @@ function clearDataSubmitPackedItems() {
   document.getElementById('recallNoOfPaperbox').value = '';
   document.getElementById('recallNoOfItemPerTote').value = '';
   document.getElementById('inputSqlGetItemsForSubmit').value = '';
-  document.getElementById('submitCurlPackedItemOutput').textContent = '';
+  document.getElementById('submitPackedItemOutput').textContent = '';
   document.getElementById('submitCurlPackedItemOutput').textContent = '';
 }
 
