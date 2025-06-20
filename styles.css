@@ -8,7 +8,10 @@ body {
   margin: 20px;
 }
 
-h1 , h2, h3, b{
+h1,
+h2,
+h3,
+b {
   font-weight: 500;
 }
 
@@ -18,7 +21,9 @@ h1 , h2, h3, b{
   font-size: 15px;
 }
 
-input, textarea, select {
+input,
+textarea,
+select {
   font-family: 'Kanit', sans-serif;
   font-size: 15px;
   padding: 10px;
@@ -60,12 +65,12 @@ textarea {
   padding: 10px;
   border: 1px solid #ccc;
   margin-top: 10px;
-  
+
   /* เพิ่มการเลื่อน */
   max-height: 500px;
   overflow-y: auto;
   overflow-x: hidden;
-  
+
   border-radius: 5px;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
@@ -191,7 +196,7 @@ select:focus {
 .radio-group input[type="radio"] {
   margin-right: 8px;
   accent-color: #007BFF;
-  transform: scale(1.2); 
+  transform: scale(1.2);
 }
 
 .radio-group label:hover {
@@ -201,91 +206,124 @@ select:focus {
 .secondary-button {
   padding: 10px 20px;
   font-size: 16px;
-  background-color: #6c757d; /* สีเทา (secondary) ของ Bootstrap */
-  color: white; /* ตัวอักษรสีขาว */
-  border: 1px solid #6c757d; /* ขอบสีเทา */
+  background-color: #6c757d;
+  /* สีเทา (secondary) ของ Bootstrap */
+  color: white;
+  /* ตัวอักษรสีขาว */
+  border: 1px solid #6c757d;
+  /* ขอบสีเทา */
   border-radius: 4px;
   cursor: pointer;
   text-align: center;
   display: inline-block;
-  text-decoration: none; /* ลบการขีดเส้นใต้ */
-  transition: background-color 0.15s ease, border-color 0.15s ease; /* ทำให้การเปลี่ยนแปลงสีลื่น */
+  text-decoration: none;
+  /* ลบการขีดเส้นใต้ */
+  transition: background-color 0.15s ease, border-color 0.15s ease;
+  /* ทำให้การเปลี่ยนแปลงสีลื่น */
 }
 
 .secondary-button:hover {
-  background-color: #5a6268; /* สีเทาเข้มเมื่อ hover */
-  border-color: #545b62; /* ขอบสีเข้มขึ้นเมื่อ hover */
+  background-color: #5a6268;
+  /* สีเทาเข้มเมื่อ hover */
+  border-color: #545b62;
+  /* ขอบสีเข้มขึ้นเมื่อ hover */
 }
 
 .secondary-button:active {
-  background-color: #4e555b; /* สีเทาเข้มเมื่อคลิก */
-  border-color: #4e555b; /* ขอบสีเทาเข้มขึ้นเมื่อคลิก */
+  background-color: #4e555b;
+  /* สีเทาเข้มเมื่อคลิก */
+  border-color: #4e555b;
+  /* ขอบสีเทาเข้มขึ้นเมื่อคลิก */
 }
 
 .secondary-button:focus {
-  outline: none; /* ลบเส้นรอบปุ่มเมื่อโฟกัส */
-  box-shadow: 0 0 0 0.2rem rgba(108, 117, 125, 0.5); /* เพิ่มเงารอบๆ เมื่อปุ่มถูกเลือก */
+  outline: none;
+  /* ลบเส้นรอบปุ่มเมื่อโฟกัส */
+  box-shadow: 0 0 0 0.2rem rgba(108, 117, 125, 0.5);
+  /* เพิ่มเงารอบๆ เมื่อปุ่มถูกเลือก */
 }
 
 .primary-button {
   padding: 10px 20px;
   font-size: 16px;
-  background-color: #007bff; /* สีน้ำเงิน (primary) ของ Bootstrap */
-  color: white; /* ตัวอักษรสีขาว */
-  border: 1px solid #007bff; /* ขอบสีน้ำเงิน */
+  background-color: #007bff;
+  /* สีน้ำเงิน (primary) ของ Bootstrap */
+  color: white;
+  /* ตัวอักษรสีขาว */
+  border: 1px solid #007bff;
+  /* ขอบสีน้ำเงิน */
   border-radius: 4px;
   cursor: pointer;
   text-align: center;
   display: inline-block;
-  text-decoration: none; /* ลบการขีดเส้นใต้ */
-  transition: background-color 0.15s ease, border-color 0.15s ease; /* ทำให้การเปลี่ยนแปลงสีลื่น */
+  text-decoration: none;
+  /* ลบการขีดเส้นใต้ */
+  transition: background-color 0.15s ease, border-color 0.15s ease;
+  /* ทำให้การเปลี่ยนแปลงสีลื่น */
 }
 
 .primary-button:hover {
-  background-color: #0056b3; /* สีน้ำเงินเข้มเมื่อ hover */
-  border-color: #0056b3; /* ขอบสีน้ำเงินเข้มเมื่อ hover */
+  background-color: #0056b3;
+  /* สีน้ำเงินเข้มเมื่อ hover */
+  border-color: #0056b3;
+  /* ขอบสีน้ำเงินเข้มเมื่อ hover */
 }
 
 .primary-button:active {
-  background-color: #004085; /* สีน้ำเงินเข้มสุดเมื่อคลิก */
-  border-color: #004085; /* ขอบสีน้ำเงินเข้มสุดเมื่อคลิก */
+  background-color: #004085;
+  /* สีน้ำเงินเข้มสุดเมื่อคลิก */
+  border-color: #004085;
+  /* ขอบสีน้ำเงินเข้มสุดเมื่อคลิก */
 }
 
 .primary-button:focus {
-  outline: none; /* ลบเส้นรอบปุ่มเมื่อโฟกัส */
-  box-shadow: 0 0 0 0.2rem rgba(38, 143, 255, 0.5); /* เพิ่มเงารอบๆ เมื่อปุ่มถูกเลือก */
+  outline: none;
+  /* ลบเส้นรอบปุ่มเมื่อโฟกัส */
+  box-shadow: 0 0 0 0.2rem rgba(38, 143, 255, 0.5);
+  /* เพิ่มเงารอบๆ เมื่อปุ่มถูกเลือก */
 }
 
 .success-button {
   padding: 10px 20px;
   font-size: 16px;
-  background-color: #28a745; /* สีเขียว (success) ของ Bootstrap */
-  color: white; /* ตัวอักษรสีขาว */
-  border: 1px solid #28a745; /* ขอบสีเขียว */
+  background-color: #28a745;
+  /* สีเขียว (success) ของ Bootstrap */
+  color: white;
+  /* ตัวอักษรสีขาว */
+  border: 1px solid #28a745;
+  /* ขอบสีเขียว */
   border-radius: 4px;
   cursor: pointer;
   text-align: center;
   display: inline-block;
-  text-decoration: none; /* ลบการขีดเส้นใต้ */
-  transition: background-color 0.15s ease, border-color 0.15s ease; /* การเปลี่ยนสีลื่น */
+  text-decoration: none;
+  /* ลบการขีดเส้นใต้ */
+  transition: background-color 0.15s ease, border-color 0.15s ease;
+  /* การเปลี่ยนสีลื่น */
 }
 
 .success-button:hover {
-  background-color: #218838; /* สีเขียวเข้มเมื่อ hover */
-  border-color: #1e7e34; /* ขอบเขียวเข้มเมื่อ hover */
+  background-color: #218838;
+  /* สีเขียวเข้มเมื่อ hover */
+  border-color: #1e7e34;
+  /* ขอบเขียวเข้มเมื่อ hover */
 }
 
 .success-button:active {
-  background-color: #1e7e34; /* สีเขียวเข้มเมื่อคลิก */
-  border-color: #1e7e34; /* ขอบเขียวเข้มเมื่อคลิก */
+  background-color: #1e7e34;
+  /* สีเขียวเข้มเมื่อคลิก */
+  border-color: #1e7e34;
+  /* ขอบเขียวเข้มเมื่อคลิก */
 }
 
 .success-button:focus {
-  outline: none; /* ลบเส้นรอบปุ่มเมื่อโฟกัส */
-  box-shadow: 0 0 0 0.2rem rgba(40, 167, 69, 0.5); /* เพิ่มเงารอบๆ เมื่อปุ่มถูกเลือก */
+  outline: none;
+  /* ลบเส้นรอบปุ่มเมื่อโฟกัส */
+  box-shadow: 0 0 0 0.2rem rgba(40, 167, 69, 0.5);
+  /* เพิ่มเงารอบๆ เมื่อปุ่มถูกเลือก */
 }
 
-.text-red{
+.text-red {
   color: red !important;
 }
 
@@ -304,7 +342,8 @@ select:focus {
   font-style: normal;
 }
 
-.active-collapsible, .collapsible:hover {
+.active-collapsible,
+.collapsible:hover {
   background-color: #555;
 }
 
@@ -321,37 +360,55 @@ select:focus {
   border-radius: 5px;
   font-size: 16px;
 }
-.info { background-color: #d9edf7; color: #31708f; }
-.success { background-color: #dff0d8; color: #3c763d; }
-.warning { background-color: #fcf8e3; color: #8a6d3b; }
-.error { background-color: #f2dede; color: #a94442; }
+
+.info {
+  background-color: #d9edf7;
+  color: #31708f;
+}
+
+.success {
+  background-color: #dff0d8;
+  color: #3c763d;
+}
+
+.warning {
+  background-color: #fcf8e3;
+  color: #8a6d3b;
+}
+
+.error {
+  background-color: #f2dede;
+  color: #a94442;
+}
 
 .payload-content2 {
-  white-space: pre-wrap; /* แสดงช่องว่างและบรรทัดใหม่ */
-  font-family: monospace; /* ใช้ฟอนต์ที่เหมือนในโค้ด */
+  white-space: pre-wrap;
+  /* แสดงช่องว่างและบรรทัดใหม่ */
+  font-family: monospace;
+  /* ใช้ฟอนต์ที่เหมือนในโค้ด */
   font-size: 14px;
   line-height: 1.6;
 }
 
 .sort-header {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    font-family: sans-serif;
-    margin-bottom: 8px;
-  }
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-family: sans-serif;
+  margin-bottom: 8px;
+}
 
-  .sort-status {
-    font-weight: bold;
-    color: #007BFF;
-  }
+.sort-status {
+  font-weight: bold;
+  color: #007BFF;
+}
 
-  .payload-content {
-    white-space: pre-wrap;
-    background: #f9f9f9;
-    padding: 10px;
-    border: 1px solid #ddd;
-  }
+.payload-content {
+  white-space: pre-wrap;
+  background: #f9f9f9;
+  padding: 10px;
+  border: 1px solid #ddd;
+}
 
 #centerToast {
   visibility: hidden;
@@ -375,3 +432,11 @@ select:focus {
   opacity: 1;
 }
 
+pre {
+  background-color: #f5f5f5;
+  padding: 15px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+}

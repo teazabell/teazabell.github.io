@@ -253,6 +253,19 @@ function generateCompactDateTime(date) {
   return `${year}${month}${day}${hours}${minutes}${seconds}`;
 }
 
+function generateCompactDateTimeNoSeconds(date) {
+  const now = date ? new Date(date) : new Date();
+  const pad = (n, len = 2) => String(n).padStart(len, '0');
+
+  const year = now.getFullYear();
+  const month = pad(now.getMonth() + 1);
+  const day = pad(now.getDate());
+  const hours = pad(now.getHours());
+  const minutes = pad(now.getMinutes());
+
+  return `${year}${month}${day}${hours}${minutes}`;
+}
+
 function formatTimeHHmmssSSS(date = new Date()) {
   const pad = (num, size) => num.toString().padStart(size, "0");
 
@@ -994,4 +1007,151 @@ function toggleGroupType() {
   } else {
     divDocNo.style.display = 'none';
   }
+}
+
+function processPrepareSubmitPackedItems() {
+  try {
+
+    var inputSqlGetItemsForSubmits = JSON.parse(document.getElementById('inputSqlGetItemsForSubmit').value)
+    var docNo = document.getElementById('recallDocNo').value
+    var noOfTote = document.getElementById('recallNoOfTote').value
+    var noOfPaperbox = document.getElementById('recallNoOfPaperbox').value
+    var noOfItemPerTote = document.getElementById('recallNoOfItemPerTote')?.value || '5'
+
+    var toteIdLists = generateToteIdListV2(noOfTote)
+
+    const items = [];
+    let running = 1;
+    const prefix = "ลังกระดาษ";
+
+    for (let i = 0; i < toteIdLists.length; i++) {
+      const tote = toteIdLists[i];
+      items.push({
+        toteId: tote,
+        toteType: "TOTE",
+        itemNo: running,
+        itemList: getRandomItemsWithItemNo(inputSqlGetItemsForSubmits, noOfItemPerTote)
+      });
+      running++
+    }
+
+    for (let i = 0; i < noOfPaperbox; i++) {
+      items.push({
+        toteId: `${prefix}${formatNumber(i + 1)}`,
+        toteType: "PAPER_BOX",
+        itemNo: running,
+        itemList: getRandomItemsWithItemNo(inputSqlGetItemsForSubmits, noOfItemPerTote)
+      });
+      running++
+    }
+
+    const payload = {
+      docNo: docNo,
+      toteList: items
+    }
+
+    const payloadJson = JSON.stringify(payload, null, 2);
+
+    const curlCommand = `curl --location --request POST '{{pos-service}}/api/stores/:storeCode/recall/submit' \\
+      --header 'x-host: pos.api.tdtech.app' \\
+      --header 'Content-Type: application/json' \\
+      --data '${payloadJson}'`;
+
+    document.getElementById('submitPackedItemOutput').textContent = payloadJson;
+    document.getElementById('submitCurlPackedItemOutput').textContent = curlCommand;
+  } catch (error) {
+    document.getElementById('submitPackedItemOutput').textContent = 'Invalid JSON';
+    document.getElementById('submitCurlPackedItemOutput').textContent = 'Invalid JSON';
+  }
+}
+
+function generateToteIdListV2(itemCount) {
+  const prefixToteList = [
+    "PL",
+    "TG", "TXG", "TTG", "TSG", "TMG", "TLG", "TDG",
+    "TXP", "TTP", "TSP", "TMP", "TLP", "TDP",
+    "TXR", "TTR", "TSR", "TMR", "TLR", "TDR",
+    "TS", "TXS", "TTS", "TSS", "TMS", "TLS", "TDS",
+    "TXB", "TTB", "TSB", "TMB", "TLB", "TDB",
+    "TXT", "TTT", "TST", "TMT", "TLT", "TDT",
+    "TXY", "TTY", "TSY", "TSYE", "TMY", "TLY", "TDY",
+    "BXG", "BTG", "BSG", "BMG", "BLG", "BDG",
+    "BXP", "BTP", "BSP", "BMP", "BLP", "BDP",
+    "BXR", "BTR", "BSR", "BMR", "BLR", "BDR",
+    "BXS", "BTS", "BSS", "BMS", "BLS", "BDS",
+    "BXB", "BTB", "BSB", "BMB", "BLB", "BDB",
+    "BXT", "BTT", "BST", "BMT", "BLT", "BDT",
+    "BXY", "BTY", "BSY", "BMY", "BLY", "BDY",
+    "TX",
+    "TDO"
+  ];
+
+  const now = new Date()
+  const randomToteCode = generateCompactDateTimeNoSeconds(now)
+  const runningRandomStart = 1
+  const toteIdList = [];
+
+  for (let i = 0; i < itemCount; i++) {
+    let generated;
+
+    const randomIndex = Math.floor(Math.random() * prefixToteList.length);
+    generated = `${prefixToteList[randomIndex]}${randomToteCode}${String(runningRandomStart + i).padStart(4, '0')}`;
+    toteIdList.push(generated);
+  }
+
+  return toteIdList;
+}
+
+function getRandomItemsWithItemNo(sourceList, count) {
+  const shuffled = [...sourceList].sort(() => 0.5 - Math.random());
+  return shuffled.slice(0, count).map((item, index) => ({
+    ...item,
+    itemNo: index + 1
+  }));
+}
+
+function formatNumber(n) {
+  return n.toString().padStart(2, '0');
+}
+
+function processPrepareSubmitCollected() {
+  try {
+    var inputSqlGetDataForSubmitCollected = JSON.parse(document.getElementById('inputSqlGetDataForSubmitCollected').value)
+    var docNo = document.getElementById('storeStockRecallDocNo').value
+
+    const payload = {
+      docNo: docNo,
+      toteList: inputSqlGetDataForSubmitCollected
+    }
+
+    const payloadJson = JSON.stringify(payload, null, 2);
+
+    const curlCommand = `curl --location --request POST '{{pos-service}}/api/stores/:storeCode/recall/collected-items' \\
+      --header 'x-host: pos.api.tdtech.app' \\
+      --header 'Content-Type: application/json' \\
+      --data '${payloadJson}'`;
+
+    document.getElementById('submitCollectedOutput').textContent = payloadJson;
+    document.getElementById('submitCurlCollectedOutput').textContent = curlCommand;
+  } catch (error) {
+    document.getElementById('submitCollectedOutput').textContent = 'Invalid JSON';
+    document.getElementById('submitCurlCollectedOutput').textContent = 'Invalid JSON';
+  }
+}
+
+function clearDataSubmitPackedItems() {
+  document.getElementById('recallDocNo').value = 'SL25-0000xx';
+  document.getElementById('recallNoOfTote').value = '';
+  document.getElementById('recallNoOfPaperbox').value = '';
+  document.getElementById('recallNoOfItemPerTote').value = '';
+  document.getElementById('inputSqlGetItemsForSubmit').value = '';
+  document.getElementById('submitCurlPackedItemOutput').textContent = '';
+  document.getElementById('submitCurlPackedItemOutput').textContent = '';
+}
+
+function clearDataSubmitCollected() {
+  document.getElementById('storeStockRecallDocNo').value = 'SL25-0000xx';
+  document.getElementById('inputSqlGetDataForSubmitCollected').value = '';
+  document.getElementById('submitCollectedOutput').textContent = '';
+  document.getElementById('submitCurlCollectedOutput').textContent = '';
 }

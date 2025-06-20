@@ -1,0 +1,193 @@
+<div>
+  <h1 style="background-color: #f8f9fa; color: #dc3545; padding: 10px 20px; border-radius: 8px; text-align: center;">
+    Submit Packed Items
+  </h1>
+  <p>
+    <b>Step1:</b> Copy the SQL query below to retrieve the article number list used for creating a recall job on NEST
+    <button id="copySqlGetArticleNo" class="copy-button"
+      onclick="copyToClipboard('sqlGetArticleNo', 'copySqlGetArticleNo')">
+      <i class="fa-regular fa-copy"></i> Copy
+    </button>
+  </p>
+
+  <pre id="sqlGetArticleNo">
+    SELECT p.article_no
+    FROM pos_mgr.product p
+    WHERE p.product_status = 'ACTIVE' AND p.product_type = 'INVENTORY'
+    ORDER BY article_no
+    LIMIT 200;
+  </pre>
+
+  <p id="sqlGetItemsForSubmit">
+    <b>Step2:</b> Copy the SQL query below to retrieve product list used for submit packed items
+    <button id="copySqlGetItemsForSubmit" class="copy-button"
+      onclick="copyToClipboard('sqlGetItemsForSubmit', 'copySqlGetItemsForSubmit')">
+      <i class="fa-regular fa-copy"></i> Copy
+    </button>
+  </p>
+  <div style="margin-top: -10px;">Note: Export data as JSON</div>
+  <pre id="sqlGetItemsForSubmit">
+    WITH limited_products AS (
+      SELECT p.article_no
+      FROM pos_mgr.product p
+      WHERE p.product_status = 'ACTIVE' AND p.product_type = 'INVENTORY'
+      ORDER BY p.article_no asc
+      LIMIT 200
+    )
+    SELECT
+      p.article_no AS "articleNo",
+      b.barcode,
+      p.product_name AS "productName",
+      p.product_display_name AS "productDisplayName",
+      b.unit,
+      b.unit_factor AS "unitFactor",
+      u.name_th AS "unitName",
+      10 AS "qty"
+    FROM limited_products lp
+    JOIN pos_mgr.product p ON lp.article_no = p.article_no
+    JOIN pos_mgr.barcode b ON p.article_no = b.article_no
+    JOIN pos_mgr.unit u ON u.code = b.unit
+    WHERE b.barcode_status = 'ACTIVE'
+    ORDER BY b.barcode;
+  </pre>
+
+  <p><b>Step3:</b> Paste result of Step 2 here </p>
+  <div class="textarea-content">
+    <textarea id="inputSqlGetItemsForSubmit"></textarea>
+  </div>
+
+  <h3>Fill in information</h3>
+  <div class="form-group">
+    <label for="docNo">DocNo:</label>
+    <input type="text" id="recallDocNo" placeholder="Enter DocNo" value="SL25-0000xx">
+    <small class="form-text text-muted" style="margin-left: 10px;">เช่น SL25-000001</small>
+  </div>
+
+  <div class="form-group">
+    <label for="recallNoOfTote">No of Tote:</label>
+    <input type="text" id="recallNoOfTote" placeholder="Enter No of Tote">
+  </div>
+
+  <div class="form-group">
+    <label for="recallNoOfPaperbox">No of Paperbox:</label>
+    <input type="text" id="recallNoOfPaperbox" placeholder="Enter No of Paperbox">
+  </div>
+
+  <div class="form-group">
+    <label for="recallNoOfItemPerTote">No of Item per Tote:</label>
+    <input type="text" id="recallNoOfItemPerTote" placeholder="Enter No of Item per Tote">
+  </div>
+
+  <div>
+    <button class="primary-button" onclick="processPrepareSubmitPackedItems()" style="margin-right: 10px;">Generate
+      Payload</button>
+    <button class="secondary-button" onclick="clearDataSubmitPackedItems()">Clear</button>
+  </div>
+
+  <hr style="margin-top: 30px;">
+  <div id="tableContainer"></div>
+
+
+  <h2>Payload Submit Packed Items Output:
+    <button id="copySubmitPackedItemOutput" class="copy-button"
+      onclick="copyToClipboard('submitPackedItemOutput', 'copySubmitPackedItemOutput')"><i
+        class="fa-regular fa-copy"></i>
+      Copy</button>
+  </h2>
+  <div id="submitPackedItemOutput" class="payload-content"></div>
+
+  <h2>Curl Submit Packed Items Output:
+    <button id="copyCurlSubmitPackedItemOutput" class="copy-button"
+      onclick="copyToClipboard('submitCurlPackedItemOutput', 'copyCurlSubmitPackedItemOutput')"><i
+        class="fa-regular fa-copy"></i>
+      Copy</button>
+  </h2>
+  <div id="submitCurlPackedItemOutput" class="payload-content" style="max-height: 250px !important"></div>
+
+  <hr style="margin-top: 30px;">
+  <div id="tableContainer"></div>
+
+  <h1 style="background-color: #f8f9fa; color: #dc3545; padding: 10px 20px; border-radius: 8px; text-align: center;">
+    Submit Collection Container
+  </h1>
+  <p>
+    <b>Step1:</b> Copy the SQL query below to retrieve the article number list used for creating a recall job on NEST
+    <button id="copySqlGetArticleNo" class="copy-button"
+      onclick="copyToClipboard('sqlGetArticleNo', 'copySqlGetArticleNo')">
+      <i class="fa-regular fa-copy"></i> Copy
+    </button>
+  </p>
+  <div style="margin-top: -10px;">Note: Export data as JSON</div>
+
+  <pre id="sqlGetArticleNo">
+    SELECT 
+      t.id,
+      t.package_no AS "packageNo",
+      t.tote_id AS "toteId",
+      t.tote_type AS "toteType",
+      t.item_no AS "itemNo",
+      FALSE AS "isEdit",
+      TRUE AS "isCollected",
+      json_agg(
+        json_build_object(
+          'id', i.id,
+          'itemNo', i.item_no,
+          'articleNo', i.article_no,
+          'barcode', i.barcode,
+          'productName', i.product_name,
+          'productDisplayName', i.product_display_name,
+          'qty', i.qty,
+          'unit', i.unit,
+          'unitFactor', i.unit_factor,
+          'unitName', i.unit_name
+        )
+        ORDER BY i.item_no
+      ) AS "itemList"
+    FROM pos_mgr.store_stock_recall s
+    INNER JOIN pos_mgr.store_stock_recall_tote t ON t.store_stock_recall_id = s.id
+    INNER JOIN pos_mgr.store_stock_recall_item i ON i.store_stock_recall_tote_id = t.id
+    WHERE s.doc_no = :docNo
+    GROUP BY 
+      t.id,
+      t.package_no,
+      t.tote_id,
+      t.tote_type,
+      t.item_no
+    ORDER BY t.item_no;
+  </pre>
+
+  <p><b>Step2:</b> Paste result of Step 2 here </p>
+  <div class="textarea-content">
+    <textarea id="inputSqlGetDataForSubmitCollected"></textarea>
+  </div>
+
+  <h3>Fill in information</h3>
+  <div class="form-group">
+    <label for="storeStockRecallDocNo">DocNo:</label>
+    <input type="text" id="storeStockRecallDocNo" placeholder="Enter DocNo">
+    <small class="form-text text-muted" style="margin-left: 10px;">เช่น SI25-PANDA02-0001</small>
+  </div>
+
+  <div>
+    <button class="primary-button" onclick="processPrepareSubmitCollected()" style="margin-right: 10px;">Generate
+      Payload</button>
+    <button class="secondary-button" onclick="clearDataSubmitCollected()">Clear</button>
+  </div>
+
+  <hr style="margin-top: 30px;">
+  <div id="tableContainer"></div>
+
+  <h2>Payload Submit Collection Container Output:
+    <button id="copySubmitCollectedOutput" class="copy-button"
+      onclick="copyToClipboard('submitCollectedOutput', 'copySubmitCollectedOutput')"><i class="fa-regular fa-copy"></i>
+      Copy</button>
+  </h2>
+  <div id="submitCollectedOutput" class="payload-content"></div>
+
+  <h2>Curl Submit Collection Container Output:
+    <button id="copyCurlSubmitCollectedOutput" class="copy-button"
+      onclick="copyToClipboard('submitCurlCollectedOutput', 'copyCurlSubmitCollectedOutput')"><i class="fa-regular fa-copy"></i>
+      Copy</button>
+  </h2>
+  <div id="submitCurlCollectedOutput" class="payload-content" style="max-height: 250px !important"></div>
+</div>
